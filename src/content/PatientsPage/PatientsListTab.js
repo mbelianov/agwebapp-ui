@@ -72,7 +72,7 @@ const PatientsListTab = () => {
                   />
                   <Pagination
                     //pagesUnknown
-                    totalItems={totalItems+(response.data.count == response.data.requested ? 1: 0)}
+                    totalItems={totalItems+(response.data.count == response.data.requested ? 1 : 0)}
                     page={currentPage}
                     backwardText="Назад"
                     forwardText="Напред"
