@@ -1,0 +1,9 @@
+@mixin banner-background() {
+  background-color: $ui-03;
+  position: relative;
+}
+
+@mixin footer-background() {
+  background-color: $ui-03;
+  position: relative;
+}

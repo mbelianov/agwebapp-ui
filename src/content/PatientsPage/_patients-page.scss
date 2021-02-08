@@ -1,0 +1,26 @@
+@import './mixins.scss';
+
+.patients-page__banner {
+  padding-top: $spacing-06;
+  padding-bottom: $spacing-07 * 2;
+  @include banner-background;
+}
+
+.patients-page__footer {
+  padding-top: $spacing-04;
+  padding-bottom: $spacing-04;
+  @include footer-background;
+}
+
+.patients-page__banner-heading {
+  @include carbon--type-style('productive-heading-06');
+}
+
+.patients-page__body-section {
+  // margin-top: rem(-40px);
+}
+
+.patients-page__body-section .bx--tabs--scrollable {
+  transform: translateZ(0);
+  justify-content: flex-end;
+}
