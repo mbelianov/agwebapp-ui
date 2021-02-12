@@ -3,8 +3,8 @@ import {
   Tabs,
   Tab,
 } from 'carbon-components-react';
-import RepoPage from '../RepoPage';
 import PatientsListTab from './PatientsListTab';
+import ExamTable from './ExamTable';
 
 const props = {
   tabs: {
@@ -31,12 +31,20 @@ const PatientsPage = () => {
                     <Tab {...props.tab} label="Списък">
                       <PatientsListTab />
                     </Tab>
+                    <Tab {...props.tab} label="Нов пациент">
+                      <p>Нов пациент</p>
+                      <ExamTable rows={[{id:"0", title:"Преглед първи триместър", timestamp:new Date().toLocaleDateString()},
+                                        {id:"1", title:"Преглед първи триместър", timestamp:new Date().toLocaleDateString()}]} />
+                    </Tab>
+                    <Tab {...props.tab} label="Нов преглед">
+                      <p>Нов преглед</p>
+                    </Tab>
                   </Tabs>
                 </div>
             </div>
             <div className="bx--row patients-page__footer">
                 <div className="bx--col-lg-16"> 
-                    <div>Footer section</div>
+                    <div>GreatBel EOOD (c)</div>
                 </div>
             </div>
         </div>

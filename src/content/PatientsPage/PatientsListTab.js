@@ -4,7 +4,7 @@ import { AxiosProvider, Request, Get, Delete, Head, Post, Put, Patch, withAxios 
 import PatientListTable from './PatientListTable';
 
 
-const table_headers = [
+const patient_table_headers = [
   { key: 'firstname', header: 'Име' },
   { key: 'secondname', header: 'Презиме' },
   { key: 'lastname', header: 'Фамилия' },
@@ -22,22 +22,28 @@ const getRowItems = (rows) =>
 
 const PatientsListTab = () => {
 
-  var setAxiosSearchItem;
+  var setAxiosStateProps;
   var bookmarks = [null];
   var totalItems = 0;
   const pageSize = 5;
 
   const AxiosRequest = () => {
-    const [searchItem, setSearchItem] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
-    const [bookmark, setBookmark] = useState(null);
+    const[stateProps, setStateProps] = useState(
+      {
+        searchParams: {
+          search: '', 
+          bookmark: null, 
+          pagesize: pageSize
+        },
+        currentPage: 1
+      });
    
-    setAxiosSearchItem = setSearchItem;
+    setAxiosStateProps = setStateProps;
     
 
     return(
       <div>
-        <Get url={process.env.REACT_APP_BACK_END_URL+process.env.REACT_APP_PATIENT_FIND_API} params={{search:searchItem, bookmark:bookmark, pagesize:pageSize}}>
+        <Get url={process.env.REACT_APP_BACK_END_URL+process.env.REACT_APP_PATIENT_FIND_API} params={stateProps.searchParams}>
           {(error, response, isLoading, makeRequest, axios) => {
             if(error) {
               return (
@@ -49,15 +55,15 @@ const PatientsListTab = () => {
             else if(isLoading) {
               return (
                 <DataTableSkeleton
-                  columnCount={table_headers.length }
+                  columnCount={patient_table_headers.length }
                   rowCount={5}
-                  headers={table_headers}
+                  headers={patient_table_headers}
                 />  
               )            
             }
             else if(response !== null) {
               const rows = getRowItems(response.data.docs);
-              if ( ((currentPage-1)*pageSize + response.data.count) > totalItems )  //this is new page that has not been presented so far
+              if ( ((stateProps.currentPage-1)*pageSize + response.data.count) > totalItems )  //this is new page that has not been presented so far
               {
                 totalItems += response.data.count;
                 bookmarks = [...bookmarks, response.data.bookmark];
@@ -67,13 +73,13 @@ const PatientsListTab = () => {
                return(
                  <>
                   <PatientListTable
-                    headers={table_headers}
+                    headers={patient_table_headers}
                     rows={rows}
                   />
                   <Pagination
                     //pagesUnknown
-                    totalItems={totalItems+(response.data.count == response.data.requested ? 1 : 0)}
-                    page={currentPage}
+                    totalItems={totalItems+(response.data.count === response.data.requested ? 1 : 0)}
+                    page={stateProps.currentPage}
                     backwardText="Назад"
                     forwardText="Напред"
                     itemsPerPageText="Редове на страница"
@@ -83,8 +89,16 @@ const PatientsListTab = () => {
                     itemText = {(min, max) => `Позиции: ${ min }–${ max }`}
                     pageSizes = {[pageSize]}
                     onChange={({ page, pageSize }) => {
-                      setCurrentPage(page);
-                      setBookmark(bookmarks[page-1]);
+                      setStateProps(
+                        {
+                          searchParams:{
+                            search: stateProps.searchParams.search,
+                            bookmark: bookmarks[page-1],
+                            pagesize: stateProps.searchParams.pagesize
+                          },
+                          currentPage: page
+                        }
+                      )
                      }}
                   />
                 </>
@@ -106,10 +120,30 @@ const PatientsListTab = () => {
         // send Axios request here
         if (shouldSkipSearch)  // we skip search at initial load
           setSkipSearch(0);
-        else if (searchTerm)
-          setAxiosSearchItem(searchTerm);
-        else 
-          setAxiosSearchItem('')
+        else {
+          bookmarks = [null];
+          totalItems = 0;
+          if (searchTerm)
+            setAxiosStateProps(
+              {
+                searchParams: {
+                  search: searchTerm, 
+                  bookmark: null, 
+                  pagesize: pageSize
+                },
+                currentPage: 1
+              });
+          else 
+            setAxiosStateProps(
+              {
+                searchParams: {
+                  search: '', 
+                  bookmark: null, 
+                  pagesize: pageSize
+                },
+                currentPage: 1
+              });
+        }
   
       }, 1500);
       return () => clearTimeout(delayDebounceFn);

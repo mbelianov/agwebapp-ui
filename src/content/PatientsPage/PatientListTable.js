@@ -17,31 +17,52 @@ import {
   TableToolbarSearch,
   TableToolbarMenu,
   TableSelectRow,
-  TableSelectAll,
   Button,
-  OverflowMenu
 } from 'carbon-components-react';
 
 import {
   Edit16,
   Edit32,
 } from '@carbon/icons-react';
-
+import ExamTable from './ExamTable';
 
 
 const PatientListTable = ({ rows, headers }) => {
 
-  const getRowDescription = (rowId) => {
-    const row = rows.find(({ id }) => id === rowId);
-    return row ? row.description : '';
+  const getExams = (patientId) => {
+    //const row = rows.find(({ id }) => id === rowId);
+    /*
+    let itemList=items.map((item,index)=>{
+      return <li key={index}>{item}</li>
+      })
+    */
+    let items = [1,2];
+
+    let itemList = items.map((item, index) => {
+      return <li key={index}>{item}</li>
+    })
+    
+    let rows =[ {id:"0", title:"Преглед първи триместър", timestamp:new Date().toLocaleDateString()},
+                {id:"1", title:"Преглед първи триместър", timestamp:new Date().toLocaleDateString()}]
+
+    return (
+      <div>
+        <ExamTable rows={rows} />
+      </div>
+     )
+
   };
 
   const onInputChange = () => {
     alert("this actualy works");
+    let items = [1, 2];
+    items.forEach((i)=> {
+      i++;
+    })
   }
 
   return (
-    <DataTable 
+    <DataTable
       isSortable
       rows={rows}
       headers={headers}
@@ -56,13 +77,14 @@ const PatientListTable = ({ rows, headers }) => {
         getSelectionProps,
       }) => (
         <TableContainer
-        title="Списък с пациенти"
-        description="Списък с пациенти според критерия за търсене">
+          title="Списък с пациенти"
+          description="Списък с пациенти според критерия за търсене"
+          locale="bg">
           <TableToolbar {...getToolbarProps()} aria-label="data table toolbar">
             <TableToolbarContent>
               <TableToolbarSearch onChange={onInputChange} />
               <TableToolbarMenu>
-                <TableToolbarAction onClick={()=>{}}>
+                <TableToolbarAction onClick={() => { }}>
                   Изтриване
                 </TableToolbarAction>
               </TableToolbarMenu>
@@ -87,9 +109,9 @@ const PatientListTable = ({ rows, headers }) => {
                 <React.Fragment key={row.id}>
                   <TableExpandRow {...getRowProps({ row })}>
                     <TableSelectRow {...getSelectionProps({ row })} />
-                      {row.cells.map(cell => (
-                        <TableCell key={cell.id}>{cell.value}</TableCell>
-                      ))}
+                    {row.cells.map(cell => (
+                      <TableCell key={cell.id}>{cell.value}</TableCell>
+                    ))}
                     <TableCell>
                       <Button
                         hasIconOnly
@@ -102,7 +124,7 @@ const PatientListTable = ({ rows, headers }) => {
                     </TableCell>
                   </TableExpandRow>
                   <TableExpandedRow colSpan={headers.length + 3}>
-                    <p>{getRowDescription(row.id)}</p>
+                    <div>{getExams(row.id)}</div>
 
                   </TableExpandedRow>
                 </React.Fragment>
