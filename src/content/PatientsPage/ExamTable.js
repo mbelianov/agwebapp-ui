@@ -14,21 +14,30 @@ import {
   TableSelectRow,
 } from 'carbon-components-react';
 
-const exam_table_headers = [
+const default_exam_table_headers = [
   { key: "id", header: "Номер"},
   { key: 'title', header: 'Преглед' },
   { key: 'timestamp', header: 'Дата на създаване' },
   
 ];
 
-function ExamTable({ rows }) {
+function ExamTable({ rows, exam_table_headers = default_exam_table_headers }) {
 
-  const getExamDetails = (examId) => {
-    return (<div>details</div>);
+  const getExamDetails = (row) => {
+    return (row.isExpanded ? <div>details</div> : <div></div>);
   };
 
-  const handleOnClick = (e) => {
-    console.log(e);
+  const handleOnClick = (row, event) => {
+    //event.preventDefault();  
+    if (event.target.nodeName !== 'svg') 
+    { 
+      console.log("Just click, no expand");
+      return;
+    }
+
+    if (!row.isExpanded){
+      console.log("we need to epxpad this raw");
+    }
   }
 
   return (
@@ -57,19 +66,20 @@ function ExamTable({ rows }) {
             <TableBody>
               {rows.map(row => (
                 <React.Fragment key={row.id}>
-                  <TableExpandRow {...getRowProps({ row, onClick:handleOnClick })}>
-                   
+                  <TableExpandRow 
+                    {...getRowProps({ row })}
+                    //onExpand={(event) => {console.log("onExpand row", row.id);}}
+                    //onClick={(event) => {console.log("onClick row", row.id);}}
+                    onClick = {(e)=>handleOnClick(row, e)}
+                  >                
                       {row.cells.map(cell => (
                         <TableCell key={cell.id}>{cell.value}</TableCell>
                       ))}
-
-
-
-
-
                   </TableExpandRow>
                   <TableExpandedRow colSpan={headers.length + 1}>
-                    <div>demo</div>
+                    
+                    {getExamDetails(row)}
+                    
                   </TableExpandedRow>
                 </React.Fragment>
                 

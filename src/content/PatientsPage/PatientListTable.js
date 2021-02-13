@@ -25,11 +25,12 @@ import {
   Edit32,
 } from '@carbon/icons-react';
 import ExamTable from './ExamTable';
+import PatientDetails from './PatientDetails';
 
 
 const PatientListTable = ({ rows, headers }) => {
 
-  const getExams = (patientId) => {
+  const getPatientDetails = (isRowExpanded, patientId) => {
     //const row = rows.find(({ id }) => id === rowId);
     /*
     let itemList=items.map((item,index)=>{
@@ -45,13 +46,28 @@ const PatientListTable = ({ rows, headers }) => {
     let rows =[ {id:"0", title:"Преглед първи триместър", timestamp:new Date().toLocaleDateString()},
                 {id:"1", title:"Преглед първи триместър", timestamp:new Date().toLocaleDateString()}]
 
-    return (
-      <div>
-        <ExamTable rows={rows} />
-      </div>
-     )
+
+
+    if (isRowExpanded)
+      return (
+        //<div><ExamTable rows={rows} /></div>
+        <div><PatientDetails patientId={patientId}/> </div>
+      )
 
   };
+
+  const handleOnClick = (row, event) => {
+    //event.preventDefault();  
+    if (event.target.nodeName !== 'svg') 
+    { 
+      console.log("Just click, no expand");
+      return;
+    }
+
+    if (!row.isExpanded){
+      console.log("we need to epxpad this raw");
+    }
+  }
 
   const onInputChange = () => {
     alert("this actualy works");
@@ -107,7 +123,9 @@ const PatientListTable = ({ rows, headers }) => {
             <TableBody>
               {rows.map(row => (
                 <React.Fragment key={row.id}>
-                  <TableExpandRow {...getRowProps({ row })}>
+                  <TableExpandRow {...getRowProps({ row })}
+                    onClick = {(event)=>handleOnClick(row, event)}
+                  >
                     <TableSelectRow {...getSelectionProps({ row })} />
                     {row.cells.map(cell => (
                       <TableCell key={cell.id}>{cell.value}</TableCell>
@@ -124,7 +142,7 @@ const PatientListTable = ({ rows, headers }) => {
                     </TableCell>
                   </TableExpandRow>
                   <TableExpandedRow colSpan={headers.length + 3}>
-                    <div>{getExams(row.id)}</div>
+                    <div>{getPatientDetails(row.isExpanded, row.id)}</div>
 
                   </TableExpandedRow>
                 </React.Fragment>

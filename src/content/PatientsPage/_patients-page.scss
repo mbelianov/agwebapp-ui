@@ -18,9 +18,11 @@
 
 .patients-page__body-section {
   // margin-top: rem(-40px);
+  transform: translateZ(0);
+  justify-content: flex-end;
 }
 
-.patients-page__body-section .bx--tabs--scrollable {
+.bx--tabs--scrollable {
   transform: translateZ(0);
   justify-content: flex-end;
 }
