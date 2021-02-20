@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Search, Link, DataTableSkeleton, Pagination } from 'carbon-components-react';
-import { AxiosProvider, Request, Get, Delete, Head, Post, Put, Patch, withAxios } from 'react-axios'
+import { Search, DataTableSkeleton, Pagination } from 'carbon-components-react';
+import { Get } from 'react-axios'
 import PatientListTable from './PatientListTable';
 
 
@@ -11,6 +11,7 @@ const patient_table_headers = [
   { key: 'egn', header: 'ЕГН' },
   { key: 'address', header: 'Адрес' },
   { key: 'timestamp', header: 'Дата на създаване' },
+  { key: 'examcount', header: 'Брой прегледи' }
 ];
 
 const getRowItems = (rows) =>

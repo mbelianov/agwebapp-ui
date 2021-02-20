@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { AxiosProvider, Request, Get, Delete, Head, Post, Put, Patch, withAxios } from 'react-axios';
-import { Search, Link, DataTableSkeleton, Pagination } from 'carbon-components-react';
+import React, { useState } from 'react';
+import { Get } from 'react-axios';
+import { DataTableSkeleton, Pagination } from 'carbon-components-react';
 import ExamTable from './ExamTable';
 
 const exam_table_headers = [
-  { key: "id", header: "Номер" },
-  { key: 'title', header: 'Преглед' },
+  { key: 'id', header: "Номер" },
+  { key: 'examtitle', header: 'Преглед' },
   { key: 'timestamp', header: 'Дата на създаване' },
-
 ];
 
 const getRowItems = (rows) =>
@@ -17,8 +16,8 @@ const getRowItems = (rows) =>
     timestamp: new Date(row.timestamp).toLocaleDateString(),
   }));
 
-const PatientDetails = (patiendId) => {
-  var setAxiosStateProps;
+const PatientDetails = (patient) => {
+  //var setAxiosStateProps;
   var bookmarks = [null];
   var totalItems = 0;
   const pageSize = 5;
@@ -27,14 +26,14 @@ const PatientDetails = (patiendId) => {
     const [stateProps, setStateProps] = useState(
       {
         searchParams: {
-          search: '',
+          search: patient.patientEGN,
           bookmark: null,
           pagesize: pageSize
         },
         currentPage: 1
       });
 
-    setAxiosStateProps = setStateProps;
+    //setAxiosStateProps = setStateProps;
 
     return (
       <div>
@@ -68,8 +67,8 @@ const PatientDetails = (patiendId) => {
               return(
                 <>
                   <ExamTable
-                    headers={exam_table_headers}
                     rows={rows}
+                    headers={exam_table_headers}
                   />
                   <Pagination
                     //pagesUnknown

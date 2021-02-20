@@ -34,7 +34,7 @@ const TutorialHeader = () => (
                     Д-р Арабаджикова
                 </HeaderName>
                 <HeaderNavigation aria-label="Carbon Tutorial">
-                  <HeaderMenuItem element={Link} to="/repos">Repos</HeaderMenuItem>
+                  
                   <HeaderMenuItem element={Link} to="/patients">Моите пациенти</HeaderMenuItem>
                 </HeaderNavigation>
                 <SideNav
@@ -43,7 +43,7 @@ const TutorialHeader = () => (
                     isPersistent={false}>
                     <SideNavItems>
                         <HeaderSideNavItems>
-                            <HeaderMenuItem element={Link} to="/repos">Repos</HeaderMenuItem>
+                            
                             <HeaderMenuItem element={Link} to="/patients">Моите пациенти</HeaderMenuItem>
                         </HeaderSideNavItems>
                     </SideNavItems>

@@ -10,18 +10,11 @@ import {
   TableBody,
   TableExpandRow,
   TableCell,
-  TableExpandedRow,
-  TableSelectRow,
+  TableExpandedRow
 } from 'carbon-components-react';
 
-const default_exam_table_headers = [
-  { key: "id", header: "Номер"},
-  { key: 'title', header: 'Преглед' },
-  { key: 'timestamp', header: 'Дата на създаване' },
-  
-];
 
-function ExamTable({ rows, exam_table_headers = default_exam_table_headers }) {
+const ExamTable = ({ rows, headers}) => {
 
   const getExamDetails = (row) => {
     return (row.isExpanded ? <div>details</div> : <div></div>);
@@ -42,9 +35,8 @@ function ExamTable({ rows, exam_table_headers = default_exam_table_headers }) {
 
   return (
     <DataTable
-      
       rows={rows}
-      headers={exam_table_headers}
+      headers={headers}
       render={({
         rows, headers,
         getHeaderProps, getRowProps, getTableProps, getToolbarProps, onInputChange,

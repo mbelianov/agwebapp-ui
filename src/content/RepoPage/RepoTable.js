@@ -17,14 +17,11 @@ import {
   TableToolbarSearch,
   TableToolbarMenu,
   TableSelectRow,
-  TableSelectAll,
   Button,
-  OverflowMenu
 } from 'carbon-components-react';
 
 import {
   Edit16,
-  Edit32,
 } from '@carbon/icons-react';
 
 
@@ -35,10 +32,6 @@ const RepoTable = ({ rows, headers }) => {
     const row = rows.find(({ id }) => id === rowId);
     return row ? row.description : '';
   };
-
-  const onInputChange = () => {
-    alert("this actualy works");
-  }
 
   return (
     <DataTable 

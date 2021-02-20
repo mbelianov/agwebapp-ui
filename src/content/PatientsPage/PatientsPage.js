@@ -4,7 +4,6 @@ import {
   Tab,
 } from 'carbon-components-react';
 import PatientsListTab from './PatientsListTab';
-import ExamTable from './ExamTable';
 import NewExamTab from './NewExamTab';
 
 const props = {
@@ -34,8 +33,6 @@ const PatientsPage = () => {
             </Tab>
             <Tab {...props.tab} label="Нов пациент">
               <p>Нов пациент</p>
-              <ExamTable rows={[{ id: "0", title: "Преглед първи триместър", timestamp: new Date().toLocaleDateString() },
-              { id: "1", title: "Преглед първи триместър", timestamp: new Date().toLocaleDateString() }]} />
             </Tab>
             <Tab {...props.tab} label="Нов преглед">
               <NewExamTab />
