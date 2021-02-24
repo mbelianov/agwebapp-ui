@@ -8,13 +8,12 @@ import {
   TableToolbarMenu, TableSelectRow, Button, OverflowMenu, OverflowMenuItem,
   Modal, ComposedModal, ModalBody, ModalHeader, TextInput, Select, SelectItem
 } from 'carbon-components-react';
+import axios from 'axios';
 
 import PatientDetails from './PatientDetails';
+import { PatientEditForm } from '../../components/PatientEditForm/PatientEditForm';
 
-
-const PatientListTable = ({ rows, headers }) => {
-
-
+const PatientListTable = ({ rows, headers, resetCallBack }) => {
 
   const getPatientDetails = (isRowExpanded, row) => {
     //const row = rows.find(({ id }) => id === rowId);
@@ -46,14 +45,28 @@ const PatientListTable = ({ rows, headers }) => {
   }
 
   const handleRowDelete = (row) => {
+    extractCellValues(row);
     setPatientDeleteModalOpen(true)
-    setCurrentRow(row);
-
   }
 
   const handleRowEdit = (row) => {
+    extractCellValues(row);
     setPatientEditModalOpen(true)
-    setCurrentRow(row);
+  }
+
+  const extractCellValues = (row) => {
+    const getCellValue = (header) => {
+      let result = (row === null ? '' : row.cells.find(cell => cell.info.header === header).value);
+      return result || '';
+    }
+    setFirstName(getCellValue('firstname'));
+    setSecondName(getCellValue('secondname'));
+    setLasttName(getCellValue('lastname'));
+    setEgn(getCellValue('egn'));
+    setTel(getCellValue('telephone'));
+    setEmail(getCellValue('email'));
+    setAddress(getCellValue('address'));
+    setId(row.id);
   }
 
   const handleNewExam = (row) => {
@@ -142,48 +155,138 @@ const PatientListTable = ({ rows, headers }) => {
 
   const [patientEditModalOpen, setPatientEditModalOpen] = useState(false);
   const [patientDeleteModalOpen, setPatientDeleteModalOpen] = useState(false);
-  const [currentRow, setCurrentRow] = useState(null);
+  const [firstname, setFirstName] = useState('');
+  const [secondname, setSecondName] = useState('');
+  const [lastname, setLasttName] = useState('');
+  const [egn, setEgn] = useState('');
+  const [tel, setTel] = useState('');
+  const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
+  const [id, setId] = useState('');
+
 
   const patientEditModal = () => {
+
+    const getUpdatedPatientData = () => {
+    }
     return (
       <Modal
         preventCloseOnClickOutside
         shouldSubmitOnEnter
-        modalHeading="Редакция данни за пациент"
+        modalHeading="Редактиране данни за пациент"
         //size="lg" //"xs","sm","lg"
         open={patientEditModalOpen}
         onRequestClose={() => setPatientEditModalOpen(false)}
-        onRequestSubmit={() => { console.log("submited"); setPatientEditModalOpen(false) }}
+        onRequestSubmit={() => { console.log("submited"); setPatientEditModalOpen(false) }} //https://www.digitalocean.com/community/tutorials/react-axios-react
         primaryButtonText="Запиши"
         secondaryButtonText="Отказ">
         <ModalBody hasForm>
-          <TextInput
-            data-modal-primary-focus
-            id="text-input-1"
-            labelText="Domain name"
-            placeholder="e.g. github.com"
-            style={{ marginBottom: '1rem' }}
-          />
-          <Select id="select-1" defaultValue="us-south" labelText="Region">
-            <SelectItem value="us-south" text="US South" />
-            <SelectItem value="us-east" text="US East" />
-          </Select>
-          <p className="bx--modal-content__text bx--modal-content__regular-content">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            cursus fermentum risus, sit amet fringilla nunc pellentesque quis. Duis
-            quis odio ultrices, cursus lacus ac, posuere felis. Donec dignissim libero
-            in augue mattis, a molestie metus vestibulum. Aliquam placerat felis
-            ultrices lorem condimentum, nec ullamcorper felis porttitor.
-        </p>
+          <div className="bx--grid bx--grid--full-width bx--grid--no-gutter">
+            <div className="bx--row">
+              <div className="bx--col-lg-5">
+                <TextInput className="patient-edit-form-text-input"
+                  id="egn"
+                  labelText="ЕГН"
+                  value={egn}
+                  disabled
+                  onChange={(event) => {
+                    setEgn(event.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="bx--row">
+              <div className="bx--col-lg-5">
+                <TextInput className="patient-edit-form-text-input"
+                  id="firstname"
+                  labelText="Име"
+                  value={firstname}
+                  onChange={(event) => {
+                    setFirstName(event.target.value);
+                  }}
+                />
+              </div>
+              <div className="bx--col-lg-5">
+                <TextInput className="patient-edit-form-text-input"
+                  id="secondname"
+                  labelText="Презиме"
+                  value={secondname}
+                  onChange={(event) => {
+                    setSecondName(event.target.value);
+                  }}
+                />
+              </div>
+              <div className="bx--col-lg-6">
+                <TextInput className="patient-edit-form-text-input"
+                  id="lastname"
+                  labelText="Фамилия"
+                  value={lastname}
+                  onChange={(event) => {
+                    setLasttName(event.target.value);
+                  }}                  
+                />
+              </div>
+            </div>
+            <div className="bx--row">
+              <div className="bx--col-lg-5">
+                <TextInput className="patient-edit-form-text-input"
+                  id="tel"
+                  labelText="Телефон"
+                  value={tel}
+                  onChange={(event) => {
+                    setTel(event.target.value);
+                  }}
+                />
+              </div>
+              <div className="bx--col">
+                <TextInput className="patient-edit-form-text-input"
+                  id="email"
+                  labelText="E-mail"
+                  value={email}
+                  onChange={(event) => {
+                    setEmail(event.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="bx--row">
+              <div className="bx--col-lg-16">
+                <TextInput className="patient-edit-form-text-input"
+                  id="address"
+                  labelText="Адрес"
+                  value={address}
+                  onChange={(event) => {
+                    setAddress(event.target.value);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
         </ModalBody>
       </Modal>
     )
   }
 
   const patientDeleteModal = () => {
-    const deletingPatient = () => {
-      console.log("Deleting: " + JSON.stringify(currentRow)); 
-      setPatientDeleteModalOpen(false)
+    const deletePatient = () => {
+      axios.get(process.env.REACT_APP_BACK_END_URL + process.env.REACT_APP_PATIENT_DELETE_API + '?id=' + id)
+        .then(res => {
+          console.log("Success");
+          console.log(res);
+          setPatientDeleteModalOpen(false)
+          resetCallBack({
+            searchParams: {
+              search: '',
+              bookmark: null,
+              pagesize: 5
+            },
+            currentPage: 1
+          })
+        })
+        .catch(err => {
+          console.log("Error");
+          console.log(err);
+        })
     }
     return (
       <Modal
@@ -192,7 +295,7 @@ const PatientListTable = ({ rows, headers }) => {
         //size="lg" //"xs","sm","lg"
         open={patientDeleteModalOpen}
         onRequestClose={() => setPatientDeleteModalOpen(false)}
-        onRequestSubmit={() => { deletingPatient() }}
+        onRequestSubmit={() => { deletePatient() }}
         primaryButtonText="ДА"
         secondaryButtonText="НЕ">
         <ModalBody>
@@ -200,14 +303,9 @@ const PatientListTable = ({ rows, headers }) => {
             Моля потвърдете изтриване на пациент:
           </p>
           <br></br>
-          {currentRow === null ? "" :
-            (
-              currentRow.cells.find(cell => cell.info.header === "firstname").value + ' ' +
-              currentRow.cells.find(cell => cell.info.header === "secondname").value + ' ' +
-              currentRow.cells.find(cell => cell.info.header === "lastname").value + ' - ' +
-              currentRow.cells.find(cell => cell.info.header === "egn").value
-            )
-          }
+          <p>
+            {firstname + ' ' + secondname + ' ' + lastname + ' - ' + egn}
+          </p>
         </ModalBody>
       </Modal>
     )
@@ -226,10 +324,6 @@ const PatientListTable = ({ rows, headers }) => {
       {dataTable()}
     </>
   );
-
-
-
-  //return (dataTable());
 
 };
 

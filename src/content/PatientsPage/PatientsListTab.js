@@ -10,8 +10,10 @@ const patient_table_headers = [
   { key: 'lastname', header: 'Фамилия' },
   { key: 'egn', header: 'ЕГН' },
   { key: 'address', header: 'Адрес' },
+  { key: 'telephone', header: 'Телефон' },
+  { key: 'email', header: 'E-mail' },
+  { key: 'examcount', header: 'Брой прегледи' },
   { key: 'timestamp', header: 'Дата на създаване' },
-  { key: 'examcount', header: 'Брой прегледи' }
 ];
 
 const getRowItems = (rows) =>
@@ -68,18 +70,23 @@ const PatientsListTab = () => {
               {
                 totalItems += response.data.count;
                 bookmarks = [...bookmarks, response.data.bookmark];
-                console.log('totalItems: ', totalItems);
-                console.log('bookmarks: ', bookmarks);
               }
+              console.log('response.data.count: ', response.data.count);
+              console.log('response.data.requested: ', response.data.requested);
+              console.log('currentPage: ', stateProps.currentPage);
+              console.log('totalItems: ', totalItems);
+              console.log('bookmarks: ', bookmarks);
+              
                return(
                 <>
                   <PatientListTable
                     headers={patient_table_headers}
                     rows={rows}
+                    resetCallBack={setStateProps}
                   />
                   <Pagination
                     //pagesUnknown
-                    totalItems={totalItems+(response.data.count === response.data.requested ? 1 : 0)}
+                    totalItems={totalItems+1}
                     page={stateProps.currentPage}
                     backwardText="Назад"
                     forwardText="Напред"
