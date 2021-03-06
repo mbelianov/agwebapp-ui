@@ -33,7 +33,8 @@ const PatientsListTab = () => {
   const AxiosRequest = () => {
     const[stateProps, setStateProps] = useState(
       {
-        searchParams: {
+        searchParams: 
+        {
           search: '', 
           bookmark: null, 
           pagesize: pageSize
@@ -71,8 +72,7 @@ const PatientsListTab = () => {
                 totalItems += response.data.count;
                 bookmarks = [...bookmarks, response.data.bookmark];
               }
-              console.log('response.data.count: ', response.data.count);
-              console.log('response.data.requested: ', response.data.requested);
+              console.log('response.data: ', response.data);
               console.log('currentPage: ', stateProps.currentPage);
               console.log('totalItems: ', totalItems);
               console.log('bookmarks: ', bookmarks);
@@ -82,7 +82,10 @@ const PatientsListTab = () => {
                   <PatientListTable
                     headers={patient_table_headers}
                     rows={rows}
-                    resetCallBack={setStateProps}
+                    resetCallBack={() => {
+                      console.log("forceUpdate");
+                      makeRequest();
+                    }}
                   />
                   <Pagination
                     //pagesUnknown
@@ -128,31 +131,23 @@ const PatientsListTab = () => {
         // send Axios request here
         if (shouldSkipSearch)  // we skip search at initial load
           setSkipSearch(0);
-        else {
+        else 
+        {
           bookmarks = [null];
           totalItems = 0;
           if (searchTerm)
             setAxiosStateProps(
               {
-                searchParams: {
-                  search: searchTerm, 
-                  bookmark: null, 
-                  pagesize: pageSize
-                },
+                searchParams: {search: searchTerm, bookmark: null, pagesize: pageSize},
                 currentPage: 1
               });
           else 
             setAxiosStateProps(
               {
-                searchParams: {
-                  search: '', 
-                  bookmark: null, 
-                  pagesize: pageSize
-                },
+                searchParams: {search: '', bookmark: null, pagesize: pageSize},
                 currentPage: 1
               });
         }
-  
       }, 1500);
       return () => clearTimeout(delayDebounceFn);
     }, [searchTerm]);

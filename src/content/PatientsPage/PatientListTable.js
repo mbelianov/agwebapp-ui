@@ -6,12 +6,11 @@ import {
   TableHeader, TableBody, TableExpandRow, TableCell, TableExpandedRow,
   TableToolbar, TableToolbarAction, TableToolbarContent, TableToolbarSearch,
   TableToolbarMenu, TableSelectRow, Button, OverflowMenu, OverflowMenuItem,
-  Modal, ComposedModal, ModalBody, ModalHeader, TextInput, Select, SelectItem
+  Modal, ModalBody, TextInput
 } from 'carbon-components-react';
 import axios from 'axios';
 
 import PatientDetails from './PatientDetails';
-import { PatientEditForm } from '../../components/PatientEditForm/PatientEditForm';
 
 const PatientListTable = ({ rows, headers, resetCallBack }) => {
 
@@ -130,11 +129,7 @@ const PatientListTable = ({ rows, headers, resetCallBack }) => {
                         <OverflowMenu flipped>
                           <OverflowMenuItem itemText="Редакция" onClick={() => handleRowEdit(row)} />
                           <OverflowMenuItem itemText="Нов преглед" onClick={() => handleNewExam(row)} />
-                          <OverflowMenuItem
-                            onClick={() => handleRowDelete(row)}
-                            requireTitle hasDivider isDelete
-                            itemText="Изтриване"
-                          />
+                          <OverflowMenuItem itemText="Изтриване" onClick={() => handleRowDelete(row)} requireTitle hasDivider isDelete/>
 
                         </OverflowMenu>
                       </TableCell>
@@ -167,8 +162,33 @@ const PatientListTable = ({ rows, headers, resetCallBack }) => {
 
   const patientEditModal = () => {
 
-    const getUpdatedPatientData = () => {
+    const submitPatientData =  () => {
+      //https://www.digitalocean.com/community/tutorials/react-axios-react
+
+      let patient = {
+        _id: id,
+        firstname: firstname,
+        secondname: secondname,
+        lastname: lastname,
+        egn: egn,
+        telephone: tel,
+        email: email,
+        address: address
+      }
+
+      console.log(patient);
+      axios.post(process.env.REACT_APP_BACK_END_URL+process.env.REACT_APP_PATIENT_ADD_API, patient)
+      .then(res => {
+        console.debug(res);
+        console.log("submit patient data result: ", res.status, res.statusText, res.data);
+        resetCallBack();
+      })
+      .catch(err => {
+        console.log("Error");
+        console.log(err);
+      })      
     }
+
     return (
       <Modal
         preventCloseOnClickOutside
@@ -177,7 +197,10 @@ const PatientListTable = ({ rows, headers, resetCallBack }) => {
         //size="lg" //"xs","sm","lg"
         open={patientEditModalOpen}
         onRequestClose={() => setPatientEditModalOpen(false)}
-        onRequestSubmit={() => { console.log("submited"); setPatientEditModalOpen(false) }} //https://www.digitalocean.com/community/tutorials/react-axios-react
+        onRequestSubmit={ () => { 
+            submitPatientData(); 
+            //resetCallBack(); 
+            setPatientEditModalOpen(false)}} 
         primaryButtonText="Запиши"
         secondaryButtonText="Отказ">
         <ModalBody hasForm>
