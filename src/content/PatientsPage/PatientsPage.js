@@ -31,14 +31,8 @@ const PatientsPage = () => {
             <Tab {...props.tab} label="Списък">
               <PatientsListTab />
             </Tab>
-            <Tab {...props.tab} label="Нов пациент">
-              <p>Нов пациент</p>
-            </Tab>
             <Tab {...props.tab} label="Нов преглед">
               <NewExamTab />
-
-
-
             </Tab>
           </Tabs>
         </div>

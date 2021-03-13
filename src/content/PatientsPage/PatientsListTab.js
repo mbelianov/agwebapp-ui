@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Search, DataTableSkeleton, Pagination } from 'carbon-components-react';
+import { Search, DataTableSkeleton, Pagination, Button } from 'carbon-components-react';
 import { Get } from 'react-axios'
 import PatientListTable from './PatientListTable';
 
@@ -31,43 +31,38 @@ const PatientsListTab = () => {
   const pageSize = 5;
 
   const AxiosRequest = () => {
-    const[stateProps, setStateProps] = useState(
+    const [stateProps, setStateProps] = useState(
       {
-        searchParams: 
-        {
-          search: '', 
-          bookmark: null, 
-          pagesize: pageSize
-        },
+        searchParams: {search: '', bookmark: null, pagesize: pageSize},
         currentPage: 1
       });
-   
-    setAxiosStateProps = setStateProps;
-    
 
-    return(
+    setAxiosStateProps = setStateProps;
+
+
+    return (
       <div>
-        <Get url={process.env.REACT_APP_BACK_END_URL+process.env.REACT_APP_PATIENT_FIND_API} params={stateProps.searchParams}>
+        <Get url={process.env.REACT_APP_BACK_END_URL + process.env.REACT_APP_PATIENT_FIND_API} params={stateProps.searchParams}>
           {(error, response, isLoading, makeRequest, axios) => {
-            if(error) {
+            if (error) {
               return (
                 <div>
                   <p>Възникна грешка: {error.message}</p>
                   <p>Опитайте отново!</p>
                 </div>)
             }
-            else if(isLoading) {
+            else if (isLoading) {
               return (
                 <DataTableSkeleton
-                  columnCount={patient_table_headers.length }
+                  columnCount={patient_table_headers.length}
                   rowCount={pageSize}
                   headers={patient_table_headers}
-                />  
-              )            
+                />
+              )
             }
-            else if(response !== null) {
+            else if (response !== null) {
               const rows = getRowItems(response.data.docs);
-              if ( ((stateProps.currentPage-1)*pageSize + response.data.count) > totalItems )  //this is new page that has not been presented so far
+              if (((stateProps.currentPage - 1) * pageSize + response.data.count) > totalItems)  //this is new page that has not been presented so far
               {
                 totalItems += response.data.count;
                 bookmarks = [...bookmarks, response.data.bookmark];
@@ -76,106 +71,119 @@ const PatientsListTab = () => {
               console.log('currentPage: ', stateProps.currentPage);
               console.log('totalItems: ', totalItems);
               console.log('bookmarks: ', bookmarks);
-              
-               return(
+
+              return (
                 <>
                   <PatientListTable
                     headers={patient_table_headers}
                     rows={rows}
                     resetCallBack={() => {
                       console.log("forceUpdate");
+                      let props = {...stateProps};
+                      props.searchParams.bookmark=null;
+                      props.currentPage = 1;
+
+                      bookmarks = [null];
+                      setStateProps({
+                        searchParams: { search: stateProps.searchParams.search, bookmark: null, pagesize: pageSize },
+                        currentPage: 1
+                      });                      
+                      totalItems = 0;
                       makeRequest();
                     }}
                   />
                   <Pagination
                     //pagesUnknown
-                    totalItems={totalItems+1}
+                    totalItems={totalItems + 1}
                     page={stateProps.currentPage}
                     backwardText="Назад"
                     forwardText="Напред"
                     itemsPerPageText="Редове на страница"
-                    pageNumberText = "Номер на страница"
-                    pageText = {page => `Страница ${ page }`}
-                    pageRangeText = {(current, total) => `от ${ total } ${ total === 1 ? 'страница' : 'страници' }` }
-                    itemText = {(min, max) => `Позиции: ${ min }–${ max }`}
-                    pageSizes = {[pageSize]}
+                    pageNumberText="Номер на страница"
+                    pageText={page => `Страница ${page}`}
+                    pageRangeText={(current, total) => `от ${total} ${total === 1 ? 'страница' : 'страници'}`}
+                    itemText={(min, max) => `Позиции: ${min}–${max}`}
+                    pageSizes={[pageSize]}
                     onChange={({ page, pageSize }) => {
                       setStateProps(
                         {
-                          searchParams:{
+                          searchParams: {
                             search: stateProps.searchParams.search,
-                            bookmark: bookmarks[page-1],
+                            bookmark: bookmarks[page - 1],
                             pagesize: stateProps.searchParams.pagesize
                           },
                           currentPage: page
                         }
                       )
-                     }}
+                    }}
                   />
                 </>
               )
             }
             return (<div>Default message before request is made.</div>)
           }}
-        </Get>   
-      </div> 
+        </Get>
+      </div>
     )
   }
 
-  const  SearchByEGN = () => {
+  const SearchByEGN = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [shouldSkipSearch, setSkipSearch] = useState(1);
-  
+
     useEffect(() => {
       const delayDebounceFn = setTimeout(() => {
         // send Axios request here
         if (shouldSkipSearch)  // we skip search at initial load
           setSkipSearch(0);
-        else 
-        {
+        else {
           bookmarks = [null];
           totalItems = 0;
           if (searchTerm)
             setAxiosStateProps(
               {
-                searchParams: {search: searchTerm, bookmark: null, pagesize: pageSize},
+                searchParams: { search: searchTerm, bookmark: null, pagesize: pageSize },
                 currentPage: 1
               });
-          else 
+          else
             setAxiosStateProps(
               {
-                searchParams: {search: '', bookmark: null, pagesize: pageSize},
+                searchParams: { search: '', bookmark: null, pagesize: pageSize },
                 currentPage: 1
               });
         }
       }, 1500);
       return () => clearTimeout(delayDebounceFn);
     }, [searchTerm]);
-  
+
     return (
-      <div>
-        <Search 
-          id="egn-search"  
-          labelText="Търсене по ЕГН" 
-          onChange={(e)=>{setSearchTerm(e.target.value)}} 
+
+      <div >
+        <Search
+          id="egn-search"
+          labelText="Търсене по ЕГН"
+          onChange={(e) => { setSearchTerm(e.target.value) }}
           placeHolderText="Търсене по ЕГН..."
-        />       
+        />
       </div>
     )
   }
-  
+
   return (
-    <div className="bx--grid bx--grid--full-width bx--grid--no-gutter patients-list-tab">
+    <div className="bx--grid bx--grid--full-width bx--grid--condensed patients-list-tab">
       <div className="bx--row patients-list-tab__r1">
-        <div className="bx--col-lg-4 bx--col-md-4">
-          <SearchByEGN /> 
+        <div className="bx--col-lg-5 bx--col-md-4">
+          <SearchByEGN />
+        </div>
+        <div className="bx--col-lg-2 bx--col-md-2">
+          <Button>Опресни</Button>
         </div>
       </div>
       <div className="bx--row patients-list-tab__r2">
         <div className="bx--col-lg-16">
           <AxiosRequest />
         </div>
-      </div>      
+      </div>
     </div>
   );
 };
