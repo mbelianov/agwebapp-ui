@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Search, DataTableSkeleton, Pagination, Button } from 'carbon-components-react';
+import { DataTableSkeleton, Pagination, Button } from 'carbon-components-react';
 import { Get } from 'react-axios'
 import PatientListTable from './PatientListTable';
+import SearchByEGN from '../../components/SearchByEGN';
 
 
 const patient_table_headers = [
@@ -23,7 +24,7 @@ const getRowItems = (rows) =>
     timestamp: new Date(row.timestamp).toLocaleDateString(),
   }));
 
-const PatientsListTab = () => {
+const PatientsListTab = ({ goToNextTab }) => {
 
   var setAxiosStateProps;
   var bookmarks = [null];
@@ -33,12 +34,11 @@ const PatientsListTab = () => {
   const AxiosRequest = () => {
     const [stateProps, setStateProps] = useState(
       {
-        searchParams: {search: '', bookmark: null, pagesize: pageSize},
+        searchParams: { search: '', bookmark: null, pagesize: pageSize },
         currentPage: 1
       });
 
     setAxiosStateProps = setStateProps;
-
 
     return (
       <div>
@@ -77,20 +77,22 @@ const PatientsListTab = () => {
                   <PatientListTable
                     headers={patient_table_headers}
                     rows={rows}
-                    resetCallBack={() => {
+                    refreshCallBack={() => {
                       console.log("forceUpdate");
-                      let props = {...stateProps};
-                      props.searchParams.bookmark=null;
-                      props.currentPage = 1;
+                      //let props = {...stateProps};
+                      //props.searchParams.bookmark=null;
+                      //props.currentPage = 1;
 
                       bookmarks = [null];
                       setStateProps({
                         searchParams: { search: stateProps.searchParams.search, bookmark: null, pagesize: pageSize },
                         currentPage: 1
-                      });                      
+                      });
                       totalItems = 0;
                       makeRequest();
                     }}
+                    newPatientHandler={(withPatientId)=>{ goToNextTab(withPatientId)}}
+
                   />
                   <Pagination
                     //pagesUnknown
@@ -127,64 +129,39 @@ const PatientsListTab = () => {
     )
   }
 
-  const SearchByEGN = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [shouldSkipSearch, setSkipSearch] = useState(1);
-
-    useEffect(() => {
-      const delayDebounceFn = setTimeout(() => {
-        // send Axios request here
-        if (shouldSkipSearch)  // we skip search at initial load
-          setSkipSearch(0);
-        else {
-          bookmarks = [null];
-          totalItems = 0;
-          if (searchTerm)
-            setAxiosStateProps(
-              {
-                searchParams: { search: searchTerm, bookmark: null, pagesize: pageSize },
-                currentPage: 1
-              });
-          else
-            setAxiosStateProps(
-              {
-                searchParams: { search: '', bookmark: null, pagesize: pageSize },
-                currentPage: 1
-              });
-        }
-      }, 1500);
-      return () => clearTimeout(delayDebounceFn);
-    }, [searchTerm]);
-
-    return (
-
-      <div >
-        <Search
-          id="egn-search"
-          labelText="Търсене по ЕГН"
-          onChange={(e) => { setSearchTerm(e.target.value) }}
-          placeHolderText="Търсене по ЕГН..."
-        />
-      </div>
-    )
+  const doSearch = (searchTerm) => {
+    bookmarks = [null];
+    totalItems = 0;
+    if (searchTerm)
+      setAxiosStateProps(
+        {
+          searchParams: { search: searchTerm, bookmark: null, pagesize: pageSize },
+          currentPage: 1
+        });
+    else
+      setAxiosStateProps(
+        {
+          searchParams: { search: '', bookmark: null, pagesize: pageSize },
+          currentPage: 1
+        });
   }
 
   return (
     <div className="bx--grid bx--grid--full-width bx--grid--condensed patients-list-tab">
       <div className="bx--row patients-list-tab__r1">
         <div className="bx--col-lg-5 bx--col-md-4">
-          <SearchByEGN />
+          <SearchByEGN callback_getSearchTerm={(searchTerm)=>{doSearch(searchTerm)}}/>
         </div>
         <div className="bx--col-lg-2 bx--col-md-2">
-          <Button>Опресни</Button>
-        </div>
+          <Button onClick={() => {}}>Опресни</Button>
+        </div>        
       </div>
       <div className="bx--row patients-list-tab__r2">
         <div className="bx--col-lg-16">
           <AxiosRequest />
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

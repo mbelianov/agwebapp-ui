@@ -36,6 +36,7 @@ const TutorialHeader = () => (
                 <HeaderNavigation aria-label="Carbon Tutorial">
                   
                   <HeaderMenuItem element={Link} to="/patients">Моите пациенти</HeaderMenuItem>
+                  <HeaderMenuItem >Помощ</HeaderMenuItem>
                 </HeaderNavigation>
                 <SideNav
                     aria-label="Side navigation"

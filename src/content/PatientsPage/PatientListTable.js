@@ -12,7 +12,7 @@ import axios from 'axios';
 
 import PatientDetails from './PatientDetails';
 
-const PatientListTable = ({ rows, headers, resetCallBack: refreshCallBack }) => {
+const PatientListTable = ({ rows, headers, refreshCallBack, newPatientHandler }) => {
 
   const getPatientDetails = (isRowExpanded, row) => {
     //const row = rows.find(({ id }) => id === rowId);
@@ -75,7 +75,7 @@ const PatientListTable = ({ rows, headers, resetCallBack: refreshCallBack }) => 
   }
 
   const handleNewExam = (row) => {
-
+    newPatientHandler(row.id);
   }
 
   const handleNewPatient = () => {
