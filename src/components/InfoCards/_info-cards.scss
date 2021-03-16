@@ -1,0 +1,20 @@
+.patient-info-section__heading {
+  @include carbon--type-style('heading-02');
+  margin-bottom: 0.25rem
+}
+
+.patient-info-section__patinet-name {
+  @include carbon--type-style('productive-heading-04');
+  margin-bottom: 0.25rem
+}
+
+.patient-info-section__patient-data {
+  @include carbon--type-style('body-long-02');
+  margin-bottom: 0.25rem;
+  margin-left: 1rem
+}
+
+.patient-info-section__patient-data-row{
+  margin-left: 0rem;
+  margin-right: 0rem
+}

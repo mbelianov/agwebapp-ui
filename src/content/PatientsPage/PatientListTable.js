@@ -11,17 +11,11 @@ import {
 import axios from 'axios';
 
 import PatientDetails from './PatientDetails';
+import { PatientInfoSection } from '../../components/InfoCards';
 
 const PatientListTable = ({ rows, headers, refreshCallBack, newPatientHandler }) => {
-
+  
   const getPatientDetails = (isRowExpanded, row) => {
-    //const row = rows.find(({ id }) => id === rowId);
-    /*
-    let itemList=items.map((item,index)=>{
-      return <li key={index}>{item}</li>
-      })
-    */
-
     if (isRowExpanded) {
       const egnCell = row.cells.find(cell => cell.info.header === "egn");
       return (
@@ -133,8 +127,7 @@ const PatientListTable = ({ rows, headers, refreshCallBack, newPatientHandler })
               <TableBody>
                 {rows.map(row => (
                   <React.Fragment key={row.id}>
-                    <TableExpandRow {...getRowProps({ row })}
-                      onClick={(event) => handleRowExpandClick(row, event)}>
+                    <TableExpandRow {...getRowProps({ row })} onClick={(event) => handleRowExpandClick(row, event)}>
                       <TableSelectRow {...getSelectionProps({ row })} />
                       {row.cells.map(cell => (
                         <TableCell key={cell.id}>{cell.value}</TableCell>
@@ -460,23 +453,23 @@ const PatientListTable = ({ rows, headers, refreshCallBack, newPatientHandler })
         })
     }
     return (
-      <Modal
+      <Modal 
         danger
-        modalHeading="Вниманиe! Изтриване на пациент"
-        //size="lg" //"xs","sm","lg"
+        modalHeading="Вниманиe! Изтриване на пациент! Моля потвърдете!"
+        size="lg" //"xs","sm","lg"
         open={patientDeleteModalOpen}
         onRequestClose={() => setPatientDeleteModalOpen(false)}
         onRequestSubmit={() => { deletePatient() }}
         primaryButtonText="ДА"
         secondaryButtonText="НЕ">
-        <ModalBody>
-          <p>
-            Моля потвърдете изтриване на пациент:
-          </p>
-          <br></br>
-          <p>
-            {values.firstname + ' ' + values.secondname + ' ' + values.lastname + ' - ' + values.egn}
-          </p>
+        <ModalBody hasForm> 
+          <PatientInfoSection
+            name={`${values.firstname} ${values.secondname} ${values.lastname}`}
+            egn={values.egn}
+            email={values.email}
+            tel={values.telephone}
+            address={values.address}
+          />
         </ModalBody>
       </Modal>
     )

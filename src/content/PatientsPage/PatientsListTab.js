@@ -13,8 +13,8 @@ const patient_table_headers = [
   { key: 'address', header: 'Адрес' },
   { key: 'telephone', header: 'Телефон' },
   { key: 'email', header: 'E-mail' },
-  { key: 'examcount', header: 'Брой прегледи' },
-  { key: 'timestamp', header: 'Дата на създаване' },
+  //{ key: 'examcount', header: 'Брой прегледи' },
+  //{ key: 'timestamp', header: 'Дата на създаване' },
 ];
 
 const getRowItems = (rows) =>
@@ -67,7 +67,7 @@ const PatientsListTab = ({ goToNextTab }) => {
                 totalItems += response.data.count;
                 bookmarks = [...bookmarks, response.data.bookmark];
               }
-              console.log('response.data: ', response.data);
+              console.log('rows: ', rows);
               console.log('currentPage: ', stateProps.currentPage);
               console.log('totalItems: ', totalItems);
               console.log('bookmarks: ', bookmarks);

@@ -72,7 +72,7 @@ const PatientDetails = (patient) => {
                   />
                   <Pagination
                     //pagesUnknown
-                    totalItems={totalItems+(response.data.count === response.data.requested ? 1 : 0)}
+                    totalItems={totalItems + totalItems?1:0}
                     page={stateProps.currentPage}
                     backwardText="Назад"
                     forwardText="Напред"
