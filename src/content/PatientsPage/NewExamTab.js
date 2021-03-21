@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Get } from 'react-axios'
 import {
-  TabsSkeleton, Tabs, Tab, Form, Button, DatePicker, DatePickerInput, TextInput
+  TabsSkeleton, Tabs, Tab, Form, Button, DatePicker, DatePickerInput, TextInput, ToastNotification, InlineNotification,
 } from 'carbon-components-react';
 import SearchByEGN from '../../components/SearchByEGN'
 import { PatientInfoSection } from '../../components/InfoCards'
 import UzdForm from './UzdForm';
-
+import UzdTwinsForm from './UzdTwinsForm';
+import UzftForm from './UzftForm';
 
 const NewExamTab = ({ patientId }) => {
   const [patientEGN, setPatientEGN] = useState(patientId);
+  const [notifications, setNotifications] = useState({uzd:{kind:"success", displayText: "", asOf:new Date()}})
+  var status;
+  let patientName;
+  let timestamp =  new Date().toISOString();
+
 
   const doSearch = (searchTerm) => {
     setPatientEGN(searchTerm);
@@ -41,9 +47,10 @@ const NewExamTab = ({ patientId }) => {
                 return (
                   <div>Няма такъв пациент</div>
                 )
+              patientName = `${response.data.docs[0].firstname} ${response.data.docs[0].secondname} ${response.data.docs[0].lastname}`;
               return (
                 <PatientInfoSection
-                  name={`${response.data.docs[0].firstname} ${response.data.docs[0].secondname} ${response.data.docs[0].lastname}`}
+                  name={patientName}
                   egn={response.data.docs[0].egn}
                   email={response.data.docs[0].email}
                   tel={response.data.docs[0].telephone}
@@ -58,10 +65,23 @@ const NewExamTab = ({ patientId }) => {
     )
   }
 
+  const handleSubmit = (content) => {
+    console.debug(content)
+    showNotification(content.formId, {kind:"success", displayText: "success", asOf:new Date()});
+  }
+
+  const showNotification = (formId, message) => {
+    setNotifications({[formId]:message});
+    status = {[formId]:message}
+  }
+
+  //useEffect (() => {setTimeout(() => {setNotificationState(false)}, 5000)}, [notificationState]);
+
   return (
     <div className="bx--grid bx--grid--full-width">
       <div className="bx--row patient-tab--new-exam-r1">
         <div className="bx--col-lg-5 bx--col-md-4">
+          
           <SearchByEGN initialSearchTerm={patientId} callback_getSearchTerm={(searchTerm) => { doSearch(searchTerm) }} />
         </div>
       </div>
@@ -77,15 +97,34 @@ const NewExamTab = ({ patientId }) => {
               return false;
 
             return (
+              <>            
               <Tabs aria-label="Tab navigation">
                 <Tab label="УЗД">
-                  <UzdForm onSubmit={() => { }} />
+                  <UzdForm onSubmit={(examvalues) => {
+                    handleSubmit({
+                      timestamp:timestamp,
+                      formId:"uzd",
+                      patient: {
+                        patientEGN:patientEGN, 
+                        patientName:patientName,
+                      },
+                      exam: {
+                        examTitle:"УЗД",
+                        examValues: {...examvalues}
+                      }})
+                    }}
+                    //onChange={showNotification}
+                    id="uzd" notificationFromParent={notifications.uzd}/>
+                    
                 </Tab>
                 <Tab label="УЗДБ">
+                  <UzdTwinsForm onSubmit={() => {}} />
                 </Tab>
                 <Tab label="УЗПТ">
+                  <UzftForm onSubmit={() => {}} />
                 </Tab>
               </Tabs>
+              </>
             )
           })()}
         </div>
