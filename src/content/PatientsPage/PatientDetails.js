@@ -4,7 +4,7 @@ import { DataTableSkeleton, Pagination } from 'carbon-components-react';
 import ExamTable from './ExamTable';
 
 const exam_table_headers = [
-  { key: 'id', header: "Номер" },
+  //{ key: 'id', header: "Номер" },
   { key: 'examtitle', header: 'Преглед' },
   { key: 'timestamp', header: 'Дата на създаване' },
 ];
@@ -14,9 +14,10 @@ const getRowItems = (rows) =>
     ...row,
     id: row._id,
     timestamp: new Date(row.timestamp).toLocaleDateString(),
+    examtitle: row.exam.examTitle
   }));
 
-const PatientDetails = (patient) => {
+const PatientDetails = (props) => {
   //var setAxiosStateProps;
   var bookmarks = [null];
   var totalItems = 0;
@@ -26,7 +27,7 @@ const PatientDetails = (patient) => {
     const [stateProps, setStateProps] = useState(
       {
         searchParams: {
-          search: patient.patientEGN,
+          search: props.patientEGN,
           bookmark: null,
           pagesize: pageSize
         },
@@ -39,6 +40,7 @@ const PatientDetails = (patient) => {
       <div>
         <Get
           url={process.env.REACT_APP_BACK_END_URL + process.env.REACT_APP_EXAM_FIND_API}
+          //url={'http://localhost:3000'+process.env.REACT_APP_EXAM_FIND_API}
           params={stateProps.searchParams}>
           {(error, response, isLoading, makeRequest, axios) => {
             if(error) {
@@ -72,7 +74,7 @@ const PatientDetails = (patient) => {
                   />
                   <Pagination
                     //pagesUnknown
-                    totalItems={totalItems + totalItems?1:0}
+                    totalItems={totalItems + 1}
                     page={stateProps.currentPage}
                     backwardText="Назад"
                     forwardText="Напред"

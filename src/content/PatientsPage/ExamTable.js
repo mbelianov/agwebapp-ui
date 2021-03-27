@@ -10,14 +10,18 @@ import {
   TableBody,
   TableExpandRow,
   TableCell,
-  TableExpandedRow
+  TableExpandedRow,
+  Tile
 } from 'carbon-components-react';
+import {ExamInfoCard} from '../../components/InfoCards'
 
 
 const ExamTable = ({ rows, headers}) => {
 
   const getExamDetails = (row) => {
-    return (row.isExpanded ? <div>details</div> : <div></div>);
+    let examdata = rows.find((r) => {return (r.id === row.id)});
+
+    return (row.isExpanded ? <ExamInfoCard examdata={examdata}/> : <div></div>);
   };
 
   const handleOnClick = (row, event) => {
@@ -42,7 +46,7 @@ const ExamTable = ({ rows, headers}) => {
         getHeaderProps, getRowProps, getTableProps, getToolbarProps, onInputChange,
         getSelectionProps,
       }) => (
-        <TableContainer title="Регистрирани прегледи">
+        <TableContainer >
           <Table {...getTableProps()} size ='compact' >
             <TableHead>
               <TableRow>

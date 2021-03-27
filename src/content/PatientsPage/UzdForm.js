@@ -115,7 +115,7 @@ const UzdForm = (props) => {
           </div>
           <div className="bx--col-sm-4 bx--col-md-4 bx--col-lg-4 bx--col-xlg-4  bx--col-max-4">
             <TextInput
-              id="anamneza"
+              id="predlezhanie"
               invalidText="A valid value is required"
               labelText="Предлежание"
               placeholder=""
@@ -124,7 +124,7 @@ const UzdForm = (props) => {
           </div>
           <div className="bx--col-sm-4 bx--col-md-4 bx--col-lg-4 bx--col-xlg-4 bx--col-max-4">
             <TextInput
-              id="obremenenost"
+              id="dvizhenie-na-ploda"
               invalidText="A valid value is required"
               labelText="Движение на плода"
               placeholder=""
@@ -343,7 +343,7 @@ const UzdForm = (props) => {
             <Button kind="secondary" >Печат</Button>
           </div>
           {(() => {
-            if (props.notificationFromParent.asOf>formStatus.notification.asOf)
+            if (props.notificationFromParent && props.notificationFromParent.asOf>formStatus.notification.asOf)
               setFormStatus({notification: props.notificationFromParent});
             let notification = formStatus.notification;
 
@@ -352,7 +352,7 @@ const UzdForm = (props) => {
             if (!notification || !notification.displayText )
               return false;
             
-            if (notification.displayText.length == 0)
+            if (notification.displayText.length === 0)
               return false;
 
             return (

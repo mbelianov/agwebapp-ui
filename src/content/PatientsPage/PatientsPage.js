@@ -47,9 +47,9 @@ const PatientsPage = () => {
           <h1 className="patients-page__banner-heading">Обработка на пациенти</h1>
         </div>
       </div>
-      <div className="bx--row patients-page__body-section">
+      <div className="bx--row">
         <div className="bx--col">
-          <Tabs {...props.tabs} aria-label="Tab navigation" onSelectionChange={(selectedTabIndex)=>{setSelectedTab(selectedTabIndex)}}>
+          <Tabs {...props.tabs} className="patients-list-tabs" aria-label="Tab navigation" onSelectionChange={(selectedTabIndex)=>{setSelectedTab(selectedTabIndex)}}>
             <Tab {...props.tab} label="Списък" renderContent={TabContentRenderedOnlyWhenSelected}>
               <PatientsListTab goToNextTab={(withPatientId)=>{
                 setSelectedPatient(withPatientId);

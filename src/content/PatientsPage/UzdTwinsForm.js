@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 
 import {
-  Form, Button, DatePicker, DatePickerInput, TextInput, Tile, TextArea
+  Form, Button, DatePicker, DatePickerInput, TextInput, Tile, TextArea, InlineNotification
 } from 'carbon-components-react';
 
 
 
 
 const UzdTiwnsForm = (props) => {
-  let values = {};
+
+  const [formStatus, setFormStatus] = useState({notification: props.notificationFromParent});
+  const [values, setValues] = useState({});
 
   const handleChange = (e) => {
-    values[e.target.id] = e.target.value;
-    console.debug("values: ", values);
+    setValues({...values, [e.target.id]:e.target.value})
+    setFormStatus({notification:{kind:"warning", displayText:"Внимание! Незапазени промени!", asOf:new Date()}}) 
   }
 
   return (
@@ -296,8 +298,6 @@ const UzdTiwnsForm = (props) => {
           </div>
         </div>
 
-
-
         <div className="bx--row">
           <div className="bx--col">
             <Tile>
@@ -450,8 +450,6 @@ const UzdTiwnsForm = (props) => {
           </div>
         </div>
 
-
-
         <div className="bx--row bx--row-padding">
           <div className="bx--col">
             <TextArea id="comment" invalidText="A valid value is required" labelText="Коментар" placeholder="" onChange={handleChange} />
@@ -467,11 +465,36 @@ const UzdTiwnsForm = (props) => {
           </div>
         </div>
 
-        <div className="bx--row">
+        <div className="bx--row bx--row-padding">
           <div className="bx--col ">
-            <Button kind="primary" tabIndex={0} type="submit">Запис</Button>
-            <Button kind="secondary">Печат</Button>
+            <Button kind="primary" onClick={() => { props.onSubmit(values) }}>Запис</Button>
+            <Button kind="secondary" >Печат</Button>
           </div>
+          {(() => {
+            if (props.notificationFromParent && props.notificationFromParent.asOf>formStatus.notification.asOf)
+              setFormStatus({notification: props.notificationFromParent});
+            let notification = formStatus.notification;
+
+            //let notification = props.notificationFromParent.asOf>formStatus.notification.asOf?props.notificationFromParent:formStatus.notification;
+            
+            if (!notification || !notification.displayText )
+              return false;
+            
+            if (notification.displayText.length === 0)
+              return false;
+
+            return (
+              <div className="bx-col">
+                <InlineNotification
+                  hideCloseButton lowContrast
+                  kind={notification.kind || "info"}
+                  subtitle={notification.displayText}
+                  title=""
+                />
+              </div>
+            )
+          })()}
+
         </div>
       </div>
     </Form>

@@ -14,7 +14,23 @@
   margin-left: 1rem
 }
 
+.exam-info-section__heading {
+  @include carbon--type-style('heading-01');
+}
+
 .patient-info-section__patient-data-row{
   margin-left: 0rem;
   margin-right: 0rem
 }
+
+.exam-info-section__navigation-row{
+  display: flex;
+  justify-content: flex-end;
+  height: 2rem;
+}
+
+.exam-info-section__buttons-row{
+  display: flex;
+  justify-content: flex-end;
+}
+

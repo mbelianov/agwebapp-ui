@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Get } from 'react-axios'
 import {
-  TabsSkeleton, Tabs, Tab, Form, Button, DatePicker, DatePickerInput, TextInput, ToastNotification, InlineNotification,
+  TabsSkeleton, Tabs, Tab
 } from 'carbon-components-react';
+import axios from 'axios'
 import SearchByEGN from '../../components/SearchByEGN'
 import { PatientInfoSection } from '../../components/InfoCards'
 import UzdForm from './UzdForm';
@@ -11,10 +12,15 @@ import UzftForm from './UzftForm';
 
 const NewExamTab = ({ patientId }) => {
   const [patientEGN, setPatientEGN] = useState(patientId);
-  const [notifications, setNotifications] = useState({uzd:{kind:"success", displayText: "", asOf:new Date()}})
-  var status;
+  const [notifications, setNotifications] = useState({
+    uzd:{kind:"success", displayText: "", asOf:new Date()},
+    uzdb:{kind:"success", displayText: "", asOf:new Date()},
+    uzft:{kind:"success", displayText: "", asOf:new Date()},
+  })
+  const [timestamp, setTimestamp] = useState(new Date().toISOString());
+  let status= {uzd:{kind:"success", displayText: "", asOf:new Date()}};
   let patientName;
-  let timestamp =  new Date().toISOString();
+  //const timestamp =  new Date().toISOString();
 
 
   const doSearch = (searchTerm) => {
@@ -66,8 +72,21 @@ const NewExamTab = ({ patientId }) => {
   }
 
   const handleSubmit = (content) => {
-    console.debug(content)
-    showNotification(content.formId, {kind:"success", displayText: "success", asOf:new Date()});
+    console.debug("submitting: ", content);
+    showNotification(content.examId, {kind:"info", displayText: "Записвам...", asOf:new Date()});
+    axios.post(process.env.REACT_APP_BACK_END_URL + process.env.REACT_APP_EXAM_ADD_API, content)
+    //axios.post("http://localhost:3000/api/exams/add", content)
+        .then(res => {
+          console.debug(res);
+          console.log("submit exam record result: ", res.status, res.statusText, res.data);
+          showNotification(content.examId, {kind:"success", displayText: "Успех", asOf:new Date()});
+        })
+        .catch(err => {
+          showNotification(content.examId, {kind:"error", displayText: "Грешка при запис. Опитайте отново.", asOf:new Date()});
+          
+          console.log("Error submiting data: ", err.message);
+          console.debug(err);
+        })
   }
 
   const showNotification = (formId, message) => {
@@ -93,9 +112,7 @@ const NewExamTab = ({ patientId }) => {
       <div className="bx--row ">
         <div className="bx--col-lg-16">
           {(() => {
-            if ((patientEGN === null) || patientEGN.length !== 10)
-              return false;
-
+            if ((patientEGN === null) || patientEGN.length !== 10) return false;
             return (
               <>            
               <Tabs aria-label="Tab navigation">
@@ -103,25 +120,31 @@ const NewExamTab = ({ patientId }) => {
                   <UzdForm onSubmit={(examvalues) => {
                     handleSubmit({
                       timestamp:timestamp,
-                      formId:"uzd",
-                      patient: {
-                        patientEGN:patientEGN, 
-                        patientName:patientName,
-                      },
-                      exam: {
-                        examTitle:"УЗД",
-                        examValues: {...examvalues}
-                      }})
+                      examId:"uzd",
+                      patient: {patientEGN:patientEGN, patientName:patientName},
+                      exam: {examTitle:"Ултразвукова диагностика",  examValues: {...examvalues}}})
                     }}
-                    //onChange={showNotification}
-                    id="uzd" notificationFromParent={notifications.uzd}/>
-                    
+                    id="uzd" notificationFromParent={notifications.uzd}/>                  
                 </Tab>
                 <Tab label="УЗДБ">
-                  <UzdTwinsForm onSubmit={() => {}} />
+                  <UzdTwinsForm onSubmit={(examvalues) => {
+                    handleSubmit({
+                      timestamp:timestamp,
+                      examId:"uzdb",
+                      patient: {patientEGN:patientEGN, patientName:patientName},
+                      exam: {examTitle:"Ултразвукова диагностика - близнаци", examValues: {...examvalues}}})
+                    }}
+                    id="uzdb" notificationFromParent={notifications.uzdb}/>
                 </Tab>
                 <Tab label="УЗПТ">
-                  <UzftForm onSubmit={() => {}} />
+                  <UzftForm onSubmit={(examvalues) => {
+                    handleSubmit({
+                      timestamp:timestamp,
+                      examId:"uzft",
+                      patient: {patientEGN:patientEGN, patientName:patientName},
+                      exam: {examTitle:"Ултразвуков първи триместър", examValues: {...examvalues}}})
+                    }}
+                    id="uzft" notificationFromParent={notifications.uzft}/>
                 </Tab>
               </Tabs>
               </>
