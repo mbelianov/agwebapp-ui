@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {Tabs, Tab} from 'carbon-components-react';
 import { settings } from 'carbon-components';
 import classNames from 'classnames';

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Get } from 'react-axios'
 import {
   TabsSkeleton, Tabs, Tab
@@ -15,6 +15,7 @@ const NewExamTab = ({ patientId }) => {
   const [notifications, setNotifications] = useState({
     uzd:{kind:"success", displayText: "", asOf:new Date()},
     uzdb:{kind:"success", displayText: "", asOf:new Date()},
+    "uzd-twins":{kind:"success", displayText: "", asOf:new Date()},
     uzft:{kind:"success", displayText: "", asOf:new Date()},
   })
   const [timestamp, setTimestamp] = useState(new Date().toISOString());
@@ -115,7 +116,7 @@ const NewExamTab = ({ patientId }) => {
             if ((patientEGN === null) || patientEGN.length !== 10) return false;
             return (
               <>            
-              <Tabs aria-label="Tab navigation">
+              <Tabs className="new-exam-tabs" aria-label="Tab navigation">
                 <Tab label="УЗД">
                   <UzdForm onSubmit={(examvalues) => {
                     handleSubmit({
