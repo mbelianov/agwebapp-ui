@@ -43,7 +43,6 @@ export class NewExamForm extends React.Component {
 
     console.debug("submitting: ", content);
     this.setState({ status: { kind: "info", displayText: "Записвам..." } });
-    return;
     axios.post(process.env.REACT_APP_BACK_END_URL + process.env.REACT_APP_EXAM_ADD_API, content)
       .then(res => {
         console.debug(res);

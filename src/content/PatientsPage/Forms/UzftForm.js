@@ -188,7 +188,7 @@ const UzftForm = (props) => {
 
       <div className="bx--row bx--row-padding">
         <div className="bx--col">
-          <TextInput id="comment" invalidText="A valid value is required" labelText="Коментар" placeholder="" onChange={props.handleChange}/>
+          <TextArea id="comment" invalidText="A valid value is required" labelText="Коментар" placeholder="" onChange={props.handleChange}/>
         </div>
       </div>
     </>

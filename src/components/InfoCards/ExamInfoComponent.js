@@ -3,6 +3,7 @@ import React from 'react';
 import { Tile, OverflowMenu, OverflowMenuItem } from 'carbon-components-react';
 import { ExamInfoUZD } from './ExamInfoUZD';
 import { ExamInfoUZDTwins } from './ExamInfoUZDTwins';
+import { ExamInfoUZFT } from './ExamInfoUZFT';
 
 export class ExamInfoComponent extends React.Component {
   constructor(props) {
@@ -45,6 +46,7 @@ export class ExamInfoComponent extends React.Component {
           {(() => { if (props.examdata.examId === "uzd") return (<ExamInfoUZD examdata={props.examdata.exam} />) })()}
           {(() => { if (props.examdata.examId === "uzdb") return (<ExamInfoUZDTwins examdata={props.examdata.exam} />) })()}
           {(() => { if (props.examdata.examId === "uzd-twins") return (<ExamInfoUZDTwins examdata={props.examdata.exam} />) })()}
+          {(() => { if (props.examdata.examId === "uzft") return (<ExamInfoUZFT examdata={props.examdata.exam} />) })()}
           <div className="bx--row"><hr /></div>
           <div className="bx--row">
             <div className="bx--col">
