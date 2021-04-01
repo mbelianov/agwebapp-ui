@@ -9,6 +9,7 @@ import { PatientInfoSection } from '../../components/InfoCards'
 import UzdForm from './UzdForm';
 import UzdTwinsForm from './UzdTwinsForm';
 import UzftForm from './UzftForm';
+import { NewExamForm } from './NewExamForm'
 
 const NewExamTab = ({ patientId }) => {
   const [patientEGN, setPatientEGN] = useState(patientId);
@@ -19,9 +20,8 @@ const NewExamTab = ({ patientId }) => {
     uzft:{kind:"success", displayText: "", asOf:new Date()},
   })
   const [timestamp, setTimestamp] = useState(new Date().toISOString());
-  let status= {uzd:{kind:"success", displayText: "", asOf:new Date()}};
   let patientName;
-  //const timestamp =  new Date().toISOString();
+  
 
 
   const doSearch = (searchTerm) => {
@@ -56,13 +56,41 @@ const NewExamTab = ({ patientId }) => {
                 )
               patientName = `${response.data.docs[0].firstname} ${response.data.docs[0].secondname} ${response.data.docs[0].lastname}`;
               return (
-                <PatientInfoSection
-                  name={patientName}
-                  egn={response.data.docs[0].egn}
-                  email={response.data.docs[0].email}
-                  tel={response.data.docs[0].telephone}
-                  address={response.data.docs[0].address}
-                />
+                <>
+                  <PatientInfoSection
+                    name={patientName}
+                    egn={response.data.docs[0].egn}
+                    email={response.data.docs[0].email}
+                    tel={response.data.docs[0].telephone}
+                    address={response.data.docs[0].address}
+                  />
+                  <Tabs className="new-exam-tabs" aria-label="Tab navigation">
+                  <Tab label="УЗД">
+                      <NewExamForm
+                        type="uzd"
+                        examTitle="Ултразвукова диагностика"
+                        patientEGN={patientEGN}
+                        patientName={patientName}
+                      />
+                    </Tab>      
+                    <Tab label="УЗДБ">
+                      <NewExamForm
+                        type="uzdb"
+                        examTitle="Ултразвукова диагностика - Блинзаци"
+                        patientEGN={patientEGN}
+                        patientName={patientName}
+                      />
+                    </Tab>                                   
+                    <Tab label="УЗПТ">
+                      <NewExamForm
+                        type="uzft"
+                        examTitle="Ултразвуков първи триместър"
+                        patientEGN={patientEGN}
+                        patientName={patientName}
+                      />
+                    </Tab>
+                  </Tabs>
+                </>
               )
             }
             return (<div>Default message before request is made.</div>)
@@ -92,7 +120,7 @@ const NewExamTab = ({ patientId }) => {
 
   const showNotification = (formId, message) => {
     setNotifications({[formId]:message});
-    status = {[formId]:message}
+
   }
 
   //useEffect (() => {setTimeout(() => {setNotificationState(false)}, 5000)}, [notificationState]);
@@ -113,6 +141,7 @@ const NewExamTab = ({ patientId }) => {
       <div className="bx--row ">
         <div className="bx--col-lg-16">
           {(() => {
+            return false; //depricated and temporary disable the rest of the code
             if ((patientEGN === null) || patientEGN.length !== 10) return false;
             return (
               <>            
@@ -137,7 +166,7 @@ const NewExamTab = ({ patientId }) => {
                     }}
                     id="uzdb" notificationFromParent={notifications.uzdb}/>
                 </Tab>
-                <Tab label="УЗПТ">
+                <Tab label="УЗПТ-old">
                   <UzftForm onSubmit={(examvalues) => {
                     handleSubmit({
                       timestamp:timestamp,
@@ -146,7 +175,7 @@ const NewExamTab = ({ patientId }) => {
                       exam: {examTitle:"Ултразвуков първи триместър", examValues: {...examvalues}}})
                     }}
                     id="uzft" notificationFromParent={notifications.uzft}/>
-                </Tab>
+                </Tab>                
               </Tabs>
               </>
             )
