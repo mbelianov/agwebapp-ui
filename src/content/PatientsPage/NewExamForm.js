@@ -2,16 +2,19 @@ import React from 'react';
 import {
   Form, Button, InlineNotification
 } from 'carbon-components-react';
+import ReactToPrint from 'react-to-print';
 import axios from 'axios'
 import UzdForm from './Forms/UzdForm'
 import UzdTwinsForm from './Forms/UzdTwinsForm'
 import UzftForm from './Forms/UzftForm'
+import { ExamInfoComponent } from '../../components/InfoCards/ExamInfoComponent';
 
 export class NewExamForm extends React.Component {
   
-  values ={}; //temporary store values of all form fields
+  values = {}; //temporary store values of all form fields
   constructor(props) {
     super(props);
+    this.ref = React.createRef();
 
     this.state = {
       timestamp: new Date().toISOString(),
@@ -32,14 +35,20 @@ export class NewExamForm extends React.Component {
     this.values[id]=value;
   }
 
-  handleSubmit = () => {
-
+  generateContent = () => {
     let content = {
       timestamp: this.state.timestamp,
       examId: this.props.type,
       patient: { patientEGN: this.props.patientEGN, patientName: this.props.patientName },
       exam: { examTitle: this.props.examTitle, examValues: this.values }
     };
+
+    return content;
+  }
+
+  handleSubmit = () => {
+
+    let content = this.generateContent();
 
     console.debug("submitting: ", content);
     this.setState({ status: { kind: "info", displayText: "Записвам..." } });
@@ -57,15 +66,14 @@ export class NewExamForm extends React.Component {
   }
 
   render() {
-    let props = this.props;
+    //let props = this.props;
 
     return (
-      <Form>
-        <div className="bx--grid bx--grid--full-width">
-          {(()=>{if (props.type === "uzd") return (<UzdForm handleChange={this.handleInputChange}></UzdForm>)})()}
-          {(()=>{if (props.type === "uzdb") return (<UzdTwinsForm handleChange={this.handleInputChange}></UzdTwinsForm>)})()}
-          {(()=>{if (props.type === "uzd-twins") return (<UzdTwinsForm handleChange={this.handleInputChange}></UzdTwinsForm>)})()}
-          {(()=>{if (props.type === "uzft") return (<UzftForm handleChange={this.handleInputChange}></UzftForm>)})()}
+      <Form >
+        <div className="bx--grid bx--grid--full-width" ref={this.ref}>
+          {(()=>{if (this.props.type === "uzd") return (<UzdForm handleChange={this.handleInputChange}></UzdForm>)})()}
+          {(()=>{if (["uzdb", "uzd-twins"].includes(this.props.type)) return (<UzdTwinsForm handleChange={this.handleInputChange}></UzdTwinsForm>)})()}
+          {(()=>{if (this.props.type === "uzft") return (<UzftForm handleChange={this.handleInputChange}></UzftForm>)})()}
           <div className="bx--row bx--row-padding">
             <div className="bx--col">
               <h6 className='exam-subtitle'>Забележки</h6>
@@ -78,7 +86,11 @@ export class NewExamForm extends React.Component {
           <div className="bx--row bx--row-padding">
             <div className="bx--col ">
               <Button kind="primary" onClick={this.handleSubmit}>Запис</Button>
-              <Button kind="secondary" >Печат</Button>
+              
+              <ReactToPrint
+                trigger={() => {return <Button kind="secondary" >Печат</Button>; }}
+                content={() => this.ref.current}
+              />
             </div>
             {(() => {
               if (this.state.status.displayText.length === 0)
@@ -96,6 +108,7 @@ export class NewExamForm extends React.Component {
             })()}
           </div>
         </div>
+        <div style={{ display: "none" }}><ExamInfoComponent examdata={this.generateContent()} ref={this.ref} /></div>
       </Form>
     )
   }
