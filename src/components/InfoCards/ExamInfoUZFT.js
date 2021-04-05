@@ -1,12 +1,7 @@
 import React from 'react';
-import { Tile } from 'carbon-components-react';
 
 
 export class ExamInfoUZFT extends React.Component {
-  constructor(props) {
-    super(props);
-
-  }
 
   render() {
 

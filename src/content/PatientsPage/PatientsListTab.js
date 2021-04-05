@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { DataTableSkeleton, Pagination, Button } from 'carbon-components-react';
 import { Get } from 'react-axios'
 import PatientListTable from './PatientListTable';

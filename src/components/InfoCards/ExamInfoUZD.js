@@ -1,10 +1,6 @@
 import React from 'react';
 
 export class ExamInfoUZD extends React.Component {
-  constructor(props) {
-    super(props);
-    
-  }
 
 render (){
 

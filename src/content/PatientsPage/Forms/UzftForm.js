@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {
-   DatePicker, DatePickerInput, TextInput, Tile, TextArea,
+   DatePicker, DatePickerInput, TextInput, TextArea,
 } from 'carbon-components-react';
 
 const UzftForm = (props) => {

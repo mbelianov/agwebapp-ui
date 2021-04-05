@@ -6,11 +6,6 @@ import { ExamInfoUZDTwins } from './ExamInfoUZDTwins';
 import { ExamInfoUZFT } from './ExamInfoUZFT';
 
 export class ExamInfoComponent extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  
 
   render() {
 

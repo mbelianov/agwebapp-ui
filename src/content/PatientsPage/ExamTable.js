@@ -11,7 +11,6 @@ import {
   TableExpandRow,
   TableCell,
   TableExpandedRow,
-  Tile
 } from 'carbon-components-react';
 import {ExamInfoCard} from '../../components/InfoCards'
 
