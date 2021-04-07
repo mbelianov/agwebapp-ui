@@ -4,7 +4,6 @@ import { Content } from 'carbon-components-react';
 import Header from './components/TutorialHeader';
 import { Route, Switch } from 'react-router-dom';
 import LandingPage from './content/LandingPage';
-import RepoPage from './content/RepoPage';
 import PatientsPage from './content/PatientsPage';
 
 class App extends Component {
@@ -15,7 +14,6 @@ class App extends Component {
         <Content>
           <Switch>
             <Route exact path="/" component={LandingPage} />
-            <Route path="/repos" component={RepoPage} />
             <Route path="/patients" component={PatientsPage} />
           </Switch>
           <div className="bx--grid bx--grid--full-width bx--grid--no-gutter patients-page">
