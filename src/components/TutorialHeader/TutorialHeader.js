@@ -23,7 +23,7 @@ import { Link } from 'react-router-dom';
 const TutorialHeader = () => (
   <HeaderContainer
     render={({ isSideNavExpanded, onClickSideNavExpand }) => (
-      <Header>
+      <Header aria-label="Header">
         <SkipToContent />
         <HeaderMenuButton
           aria-label="Open menu"
@@ -33,7 +33,7 @@ const TutorialHeader = () => (
         <HeaderName element={Link} to="/" prefix="">
           Д-р Арабаджикова
         </HeaderName>
-        <HeaderNavigation >
+        <HeaderNavigation aria-label="Header menu">
           <HeaderMenuItem element={Link} to="/patients">Моите пациенти</HeaderMenuItem>
           <HeaderMenuItem >Помощ</HeaderMenuItem>
         </HeaderNavigation>
@@ -48,8 +48,13 @@ const TutorialHeader = () => (
           </SideNavItems>
         </SideNav>
         <HeaderGlobalBar>
-          <HeaderMenuItem href="/logout"><Logout20 /></HeaderMenuItem>
-          
+          {/*<HeaderMenuItem href="/logout"><Logout20 /></HeaderMenuItem>-->*/}
+          <HeaderGlobalAction aria-label="Logout" onClick={(e) => {
+              e.preventDefault();
+              window.location.href='/logout';
+            }}>
+            <Logout20 />
+          </HeaderGlobalAction>
         </HeaderGlobalBar>
       </Header>
     )}
