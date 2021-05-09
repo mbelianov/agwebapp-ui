@@ -1,10 +1,9 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component } from 'react';
 import './app.scss';
 import { Content } from 'carbon-components-react';
 import Header from './components/TutorialHeader';
 import { Route, Switch } from 'react-router-dom';
-import { useUser, UserState } from './contexts/User/UserState';
-import { getUser, setLoading } from "./contexts/User/UserAction";
+import { UserState } from './contexts/User/UserState';
 import LandingPage from './content/LandingPage';
 import PatientsPage from './content/PatientsPage';
 
@@ -14,7 +13,7 @@ class App extends Component {
   render() {
     return (
       <UserState>
-        <User>
+
           <Header />
           <Content>
             <Switch>
@@ -29,32 +28,10 @@ class App extends Component {
               </div>
             </div>
           </Content>
-        </User>
+
       </UserState>
     );
   }
-}
-
-const User = ({ children }) => {
-  const [userState, userDispatch] = useUser();
-
-
-  // get user info handler
-  const getUserInfoHandler = async () => {
-    //await getUser(userDispatch);
-    //setLoading(userDispatch, false);
-  };
-
-  // get user info
-  useEffect(() => {
-    getUserInfoHandler();
-  }, []);
-
-  return (
-    <>
-      {children}
-    </>
-  )
 }
 
 export default App;

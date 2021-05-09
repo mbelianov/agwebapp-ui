@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { DataTableSkeleton, Pagination, Button } from 'carbon-components-react';
 import { Get } from 'react-axios'
+import  axios  from 'axios'
+import { useUser } from '../../contexts/User/UserState'
 import PatientListTable from './PatientListTable';
 import SearchByEGN from '../../components/SearchByEGN';
 
@@ -24,6 +26,7 @@ const getRowItems = (rows) =>
     timestamp: new Date(row.timestamp).toLocaleDateString(),
   }));
 
+
 const PatientsListTab = ({ goToNextTab }) => {
 
   var setAxiosStateProps;
@@ -37,12 +40,19 @@ const PatientsListTab = ({ goToNextTab }) => {
         searchParams: { search: '', bookmark: null, pagesize: pageSize },
         currentPage: 1
       });
+    const [userState, userDispatch] = useUser();
 
     setAxiosStateProps = setStateProps;
 
+    const axiosInstance = axios.create ({
+      baseURL: process.env.REACT_APP_BACK_END_URL,
+      timeout: 2000,
+      headers: {'Authorization':`Bearer ${userState.user.accessToken.token}`}
+    });
+
     return (
       <div>
-        <Get url={process.env.REACT_APP_BACK_END_URL + process.env.REACT_APP_PATIENT_FIND_API} params={stateProps.searchParams}>
+        <Get instance={axiosInstance} url={process.env.REACT_APP_PATIENT_FIND_API} params={stateProps.searchParams}>
           {(error, response, isLoading, makeRequest, axios) => {
             if (error) {
               return (

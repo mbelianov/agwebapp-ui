@@ -1,5 +1,6 @@
 import React from 'react';
-import {UserContext} from '../../contexts/User/UserContext'
+//import {UserContext} from '../../contexts/User/UserContext'
+import { useUser } from '../../contexts/User/UserState';
 import {
   Tabs,
   Tab,
@@ -17,9 +18,9 @@ const props = {
 };
 
 const LandingPage = () => {
+  const[userState] = useUser();
+
   return (
-    <UserContext.Consumer>
-      {({state})=> (
         <div className="bx--grid bx--grid--full-width landing-page">
           <div className="bx--row ">
             <div className="bx--col bx--no-gutter">
@@ -29,15 +30,19 @@ const LandingPage = () => {
                     <div className="bx--row landing-page__tab-content">
                       <div className="bx--col-md-4 bx--col-lg-7">
                         <h2 className="landing-page__subheading">
-                          Здравейте {state.user.name}
+                          Здравейте {userState.user && userState.user.name}
                         </h2>
+                        <p className="landing-page__p">
+                          Your id token: {userState.user && userState.user.identityToken.token}
+                        </p>
 
                         <p className="landing-page__p">
-                          Carbon is IBM’s open-source design system for digital
-                          products and experiences. With the IBM Design Language
-                          as its foundation, the system consists of working code,
-                          design tools and resources, human interface guidelines,
-                          and a vibrant community of contributors.
+                          Your access token: {userState.user && userState.user.accessToken.token}
+                        </p>
+                        <p className="landing-page__p">
+                          exp: {userState.user && userState.user.accessToken.exp}<br/>
+                          now: {Date.now()/1000}<br/>
+                          
                         </p>
                         
                       </div>
@@ -75,8 +80,6 @@ const LandingPage = () => {
             </div>
           </div>
         </div>
-      )}
-    </UserContext.Consumer>
   );
 };
 

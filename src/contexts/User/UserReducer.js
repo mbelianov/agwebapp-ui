@@ -16,6 +16,11 @@ export default (state, action) => {
         ...state,
         loading: action.payload
       };
+      case "SET_AUTHPROVIDER":
+        return {
+          ...state,
+          auth_provider: action.payload
+        };      
     default:
       return state;
   }
