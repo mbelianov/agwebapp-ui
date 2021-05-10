@@ -46,7 +46,7 @@ const PatientsListTab = ({ goToNextTab }) => {
 
     const axiosInstance = axios.create ({
       baseURL: process.env.REACT_APP_BACK_END_URL,
-      timeout: 2000,
+      timeout: 20000,
       headers: {'Authorization':`Bearer ${userState.user.accessToken.token}`}
     });
 
