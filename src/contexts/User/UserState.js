@@ -80,30 +80,18 @@ export const UserState = ({ children }) => {
 
           const tokens = await appID.silentSignin();
           state.user = parseTokens(tokens);
-          dispatch({
-            type: "SET_USER",
-            payload: state.user
-          });
-          dispatch({
-            type:"SET_AUTHPROVIDER",
-            payload:appID
-          })
+          dispatch({type: "SET_USER", payload: state.user});
+          dispatch({type:"SET_AUTHPROVIDER",  payload:appID})
 
         }
         catch (e) {
           console.log("silentSignin failed.");
           console.log("Error: ", e.message);
-          dispatch({
-            type: "SET_ERROR",
-            payload: {error:true, message:"silentSignin failed."}
-          })
+          dispatch({type: "SET_ERROR", payload: {error:true, message:"silentSignin failed."}})
         }
       }
       else {
-        dispatch({
-          type: "SET_ERROR",
-          payload: {error:true, message:"Unable to initialize AppID"}
-        })
+        dispatch({type: "SET_ERROR", payload: {error:true, message:"Unable to initialize AppID"}})
       }      
     }
     restoreUserSession(initState);

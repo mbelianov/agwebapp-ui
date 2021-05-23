@@ -1,8 +1,11 @@
 export default (state, action) => {
+  //console.log("previous state in reducer: ", state)
   switch (action.type) {
     case "SET_USER":
       return {
         ...state,
+        error: false,
+        message:"",
         user: action.payload
       };
     case "SET_ERROR":

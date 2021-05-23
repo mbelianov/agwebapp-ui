@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { DataTableSkeleton, Pagination, Button } from 'carbon-components-react';
 import { Get } from 'react-axios'
-import  axios  from 'axios'
-import { useUser } from '../../contexts/User/UserState'
 import PatientListTable from './PatientListTable';
 import SearchByEGN from '../../components/SearchByEGN';
 
@@ -40,19 +38,13 @@ const PatientsListTab = ({ goToNextTab }) => {
         searchParams: { search: '', bookmark: null, pagesize: pageSize },
         currentPage: 1
       });
-    const [userState, userDispatch] = useUser();
+    
 
     setAxiosStateProps = setStateProps;
 
-    const axiosInstance = axios.create ({
-      baseURL: process.env.REACT_APP_BACK_END_URL,
-      timeout: 20000,
-      headers: {'Authorization':`Bearer ${userState.user.accessToken.token}`}
-    });
-
     return (
       <div>
-        <Get instance={axiosInstance} url={process.env.REACT_APP_PATIENT_FIND_API} params={stateProps.searchParams}>
+        <Get url={process.env.REACT_APP_PATIENT_FIND_API} params={stateProps.searchParams}>
           {(error, response, isLoading, makeRequest, axios) => {
             if (error) {
               return (

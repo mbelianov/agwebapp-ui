@@ -1,5 +1,4 @@
 import React from 'react';
-//import {UserContext} from '../../contexts/User/UserContext'
 import { useUser } from '../../contexts/User/UserState';
 import {
   Tabs,
@@ -32,18 +31,6 @@ const LandingPage = () => {
                         <h2 className="landing-page__subheading">
                           Здравейте {userState.user && userState.user.name}
                         </h2>
-                        <p className="landing-page__p">
-                          Your id token: {userState.user && userState.user.identityToken.token}
-                        </p>
-
-                        <p className="landing-page__p">
-                          Your access token: {userState.user && userState.user.accessToken.token}
-                        </p>
-                        <p className="landing-page__p">
-                          exp: {userState.user && userState.user.accessToken.exp}<br/>
-                          now: {Date.now()/1000}<br/>
-                          
-                        </p>
                         
                       </div>
                       <div className="bx--col-md-4 bx--offset-lg-1 bx--col-lg-8">

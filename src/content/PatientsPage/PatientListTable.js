@@ -6,9 +6,11 @@ import {
   TableHeader, TableBody, TableExpandRow, TableCell, TableExpandedRow,
   TableToolbar, TableToolbarAction, TableToolbarContent, TableToolbarSearch,
   TableToolbarMenu, TableSelectRow, Button, OverflowMenu, OverflowMenuItem,
-  Modal, ModalBody, TextInput
+  ComposedModal, ModalBody, ModalHeader, ModalFooter, TextInput,
+  InlineLoading
 } from 'carbon-components-react';
-import axios from 'axios';
+//import axios from 'axios';
+import {withAxios} from 'react-axios'
 
 import PatientDetails from './PatientDetails';
 import { PatientInfoSection } from '../../components/InfoCards';
@@ -44,8 +46,8 @@ const PatientListTable = ({ rows, headers, refreshCallBack, newPatientHandler })
 
   const handleRowEdit = (row) => {
     extractCellValues(row);
-    setTouched({});
-    setErrors({});
+    //setTouched({});
+    //setErrors({});
     setNewPatientOnOff(false);
     setPatientEditModalOpen(true)
   }
@@ -74,8 +76,8 @@ const PatientListTable = ({ rows, headers, refreshCallBack, newPatientHandler })
 
   const handleNewPatient = () => {
     extractCellValues(null);
-    setTouched({});
-    setErrors({});
+    //setTouched({});
+    //setErrors({});
     setNewPatientOnOff(true);
     setPatientEditModalOpen(true)
   }
@@ -158,11 +160,12 @@ const PatientListTable = ({ rows, headers, refreshCallBack, newPatientHandler })
   const [patientEditModalOpen, setPatientEditModalOpen] = useState(false);
   const [patientDeleteModalOpen, setPatientDeleteModalOpen] = useState(false);
   const [values, setValues] = useState({});
-  const [touched, setTouched] = useState({});
-  const [errors, setErrors] = useState({});
+  //const [touched, setTouched] = useState({});
+  //const [errors, setErrors] = useState({});
   const [isNewPatient, setNewPatientOnOff] = useState(false);
 
-  const patientEditModal = () => {
+  
+  /*const patientEditModal = () => {
 
     const nameValidation = (fieldName, fieldValue) => {
       if (fieldValue.trim() === '') {
@@ -221,7 +224,7 @@ const PatientListTable = ({ rows, headers, refreshCallBack, newPatientHandler })
 
     const validate = {
       firstname: name => nameValidation('име', name),
-      secondname: name => nameValidation('презиме Name', name),
+      secondname: name => nameValidation('презиме', name),
       lastname: name => nameValidation('фамилия', name),
       email: emailValidation,
       telephone: telValidation,
@@ -248,7 +251,6 @@ const PatientListTable = ({ rows, headers, refreshCallBack, newPatientHandler })
         [id]: true,
       });
     };
-
 
     const handleBlur = evt => {
 
@@ -435,9 +437,9 @@ const PatientListTable = ({ rows, headers, refreshCallBack, newPatientHandler })
         </ModalBody>
       </Modal>
     )
-  }
+  }*/
 
-  const patientDeleteModal = () => {
+  /*const patientDeleteModal = () => {
     const deletePatient = () => {
       axios.get(process.env.REACT_APP_BACK_END_URL + process.env.REACT_APP_PATIENT_DELETE_API + '?id=' + values._id)
         .then(res => {
@@ -473,16 +475,375 @@ const PatientListTable = ({ rows, headers, refreshCallBack, newPatientHandler })
         </ModalBody>
       </Modal>
     )
-  }
+  }*/
+
+  const PatientEditModal = withAxios(class PatientEditModalRaw extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {savingInProgress: false, values:{}, errors:{}, touched:{}};
+    }
+
+    componentDidMount(){
+      this.setState({values:values, errors:{}, touched:{}})
+    }
+
+    nameValidation = (fieldName, fieldValue) => {
+      if (fieldValue.trim() === '') {
+        return `липсва ${fieldName}`;
+      }
+      if (/[^a-zа-яA-ZА-Я -]/.test(fieldValue)) {
+        return 'невалидни символи';
+      }
+      if (fieldValue.trim().length < 3) {
+        return `мин 3 символа`;
+      }
+      return null;
+    };
+
+    emailValidation = email => {
+      if (/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)) {
+        return null;
+      }
+      if (email.trim() === '') {
+        return 'липсва еmail';
+      }
+      return 'невалиден email';
+    };
+
+    egnValidation = egn => {
+      if (/^[0-9]{10}$/.test(egn)) {
+        return null;
+      }
+      if (egn.trim() === '') {
+        return 'липсва EGN';
+      }
+      return 'YYMMDDXXXX';
+    };   
+
+    addressValidation = address => {
+
+      if (address.trim() === '') {
+        return 'липсва адрес';
+      }
+      return null;
+    };
+
+    telValidation = tel => {
+      if (/^(\+|00)[0-9]{1,3}[0-9]{4,14}$/.test(tel)) {
+        return null;
+      }
+      if (tel.trim() === '') {
+        return 'липсва номер';
+      }
+      return '+CCNDCXXXXXXXXX';
+    };
+
+    alwaysValid = value => {
+      return null;
+    }
+
+    validate = {
+      firstname: name => this.nameValidation('име', name),
+      secondname: name => this.nameValidation('презиме', name),
+      lastname: name => this.nameValidation('фамилия', name),
+      email: this.emailValidation,
+      telephone: this.telValidation,
+      address: this.addressValidation,
+      egn: this.egnValidation,
+      _id: this.alwaysValid,
+    };
+
+    handleChange = evt => {
+      const { id, value: newValue, type } = evt.target;
+
+      // keep number fields as numbers
+      const value = type === 'number' ? +newValue : newValue;
+
+      // save field values and field modified
+      this.setState((state, props) =>{
+        let values = state.values;
+        let touched = state.touched;
+
+        values[id] = value;
+        touched[id] = true;
+
+        return ({values:values, touched:touched})
+      });
+
+    };
+
+
+    handleBlur = evt => {
+
+      const { id, value } = evt.target;
+
+      // remove whatever error was there previously
+      // const { [id]: removedError, ...rest } = this.state.errors;
+
+      // check for a new error
+      const error = this.validate[id](value);
+
+      // validate the field if the value has been touched
+      this.setState((state, props) => {
+        let errors = state.errors;
+        if (state.touched[id])
+          errors[id]=error;
+        return({errors:errors})
+        //({errors:(error && { [id]: state.touched[id] && error })})
+      });
+    };
+
+    // form submit handler
+    handleSubmit = () => {
+      //evt.preventDefault();
+
+      // validate the form
+      let values = this.state.values;
+      const formValidation = Object.keys(values).reduce(
+        (acc, key) => {
+          const newError = this.validate[key](values[key]);
+          const newTouched = { [key]: true };
+          return {
+            errors: { ...acc.errors, ...(newError && { [key]: newError }), },
+            touched: { ...acc.touched, ...newTouched, },
+          };
+        },
+        {
+          //errors: { ...this.state.errors },
+          //touched: { ...this.state.touched },
+          errors: this.state.errors,
+          touched: this.state.touched,          
+        },
+      );
+      
+      this.setState({errors:formValidation.errors, touched:formValidation.touched})
+
+      if (
+        Object.values(formValidation.errors).every(e => e === null) && // no errors
+        Object.values(formValidation.touched).length === Object.values(values).length && // all fields were touched
+        Object.values(formValidation.touched).every(t => t === true) // every touched field is true
+      ) {
+        return true
+      }
+
+      return false;
+    };
+
+    submitPatientData = () => {   //https://www.digitalocean.com/community/tutorials/react-axios-react
+
+      this.setState({savingInProgress:true});
+      let v = this.state.values
+
+      if (!v._id || v._id.length === 0){
+        v._id = this.state.values.egn
+      }
+
+      this.props.axios.post(process.env.REACT_APP_PATIENT_ADD_API, v)
+        .then(res => {
+          console.debug(res);
+          console.log("submit patient data result: ", res.status, res.statusText, res.data);
+          setPatientEditModalOpen(false);
+          refreshCallBack();
+        })
+        .catch(err => {
+          alert ("Възникна неочаквана грешка. Презаредете приложението и опитатйте отново!");
+          console.log("Error submiting data: ", err.message);
+          console.debug(err);
+        })
+    }
+
+    render() {
+      return (
+        <ComposedModal preventCloseOnClickOutside size="lg" //"xs","sm","lg"
+          //onRequestClose={() => setPatientEditModalOpen(false)}
+          open={patientEditModalOpen}>
+          <ModalHeader>
+            <h3>
+              {`Данни за пациент ${isNewPatient?' - нов пациент':' - редакция'}`}
+            </h3>
+          </ModalHeader>
+          <ModalBody hasForm>
+            <div className="bx--grid bx--grid--full-width bx--grid--no-gutter">
+              <div className="bx--row">
+                <div className="bx--col-lg-5">
+                  <TextInput className="patient-edit-form-text-input"
+                    id="egn"
+                    labelText="ЕГН"
+                    value={this.state.values["egn"]} onChange={this.handleChange} onBlur={this.handleBlur}
+                    helperText=' '
+                    invalid={this.state.touched.egn && this.state.errors.egn ? true : false}
+                    invalidText={this.state.touched.egn && this.state.errors.egn}                  
+                    disabled={!isNewPatient || this.state.savingInProgress}
+                  />
+                </div>
+              </div>
+              <div className="bx--row">
+                <div className="bx--col-lg-5">
+                  <TextInput className="patient-edit-form-text-input"
+                    id="firstname"
+                    labelText="Име"
+                    value={this.state.values["firstname"]} onChange={this.handleChange} onBlur={this.handleBlur}
+                    helperText=' '
+                    invalid={this.state.touched.firstname && this.state.errors.firstname ? true : false}
+                    invalidText={this.state.touched.firstname && this.state.errors.firstname}
+                    disabled={this.state.savingInProgress}
+                  />
+                </div>
+                <div className="bx--col-lg-5">
+                  <TextInput className="patient-edit-form-text-input"
+                    id="secondname"
+                    labelText="Презиме"
+                    value={this.state.values["secondname"]} onChange={this.handleChange} onBlur={this.handleBlur}
+                    helperText=' '
+                    invalid={this.state.touched.secondname && this.state.errors.secondname ? true : false}
+                    invalidText={this.state.touched.secondname && this.state.errors.secondname}
+                    disabled={this.state.savingInProgress}
+                  />
+                </div>
+                <div className="bx--col-lg-6">
+                  <TextInput className="patient-edit-form-text-input"
+                    id="lastname"
+                    labelText="Фамилия"              
+                    value={this.state.values["lastname"]} onChange={this.handleChange} onBlur={this.handleBlur}
+                    helperText=' '
+                    invalid={this.state.touched.lastname && this.state.errors.lastname ? true : false}
+                    invalidText={this.state.touched.lastname && this.state.errors.lastname}
+                    disabled={this.state.savingInProgress}
+                  />
+                </div>
+              </div>
+              <div className="bx--row">
+                <div className="bx--col-lg-5">
+                  <TextInput className="patient-edit-form-text-input"
+                    id="telephone"
+                    labelText="Телефон"
+                    value={this.state.values["telephone"]} onChange={this.handleChange} onBlur={this.handleBlur}
+                    helperText=' '
+                    invalid={this.state.touched.telephone && this.state.errors.telephone ? true : false}
+                    invalidText={this.state.touched.telephone && this.state.errors.telephone}
+                    disabled={this.state.savingInProgress}
+                  />
+                </div>
+                <div className="bx--col">
+                  <TextInput className="patient-edit-form-text-input"
+                    id="email"
+                    labelText="E-mail"
+                    value={this.state.values["email"]} onChange={this.handleChange} onBlur={this.handleBlur}
+                    helperText=' '
+                    invalid={this.state.touched.email && this.state.errors.email ? true : false}
+                    invalidText={this.state.touched.email && this.state.errors.email}
+                    disabled={this.state.savingInProgress}
+                  />
+                </div>
+              </div>
+              <div className="bx--row">
+                <div className="bx--col-lg-16">
+                  <TextInput className="patient-edit-form-text-input"
+                    id="address"
+                    labelText="Адрес"
+                    value={this.state.values["address"]} onChange={this.handleChange} onBlur={this.handleBlur}
+                    helperText=' '
+                    invalid={this.state.touched.address && this.state.errors.address ? true : false}
+                    invalidText={this.state.touched.address && this.state.errors.address}
+                    disabled={this.state.savingInProgress}
+                  />
+                </div>
+              </div>              
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <Button kind="secondary" onClick={() => {  setPatientEditModalOpen(false); }} disabled={this.state.savingInProgress}>
+              Отказ
+            </Button>
+            {this.state.savingInProgress ? (
+               <InlineLoading  style={{ marginLeft: '1rem' }}  description='Записвам...'  status='active'/>
+            ) : (
+              <Button kind="primary"
+                onClick={() => {
+                  if (this.handleSubmit()) 
+                    this.submitPatientData();
+                  else 
+                    alert("Моля уверете се, че всички полета имат валидни стойности!");
+                  }}>
+                Запиши
+              </Button>
+            )}            
+          </ModalFooter>
+        </ComposedModal>
+      )
+    }
+  })
+
+  const PatientDeleteModal = withAxios(class PatientDeleteModalRaw extends React.Component {
+
+    constructor(props) {
+      super(props);
+      this.state = {deleteInProgress: false};
+    }
+
+    deletePatient = () => {
+      this.setState({deleteInProgress:true})
+      this.props.axios.get(process.env.REACT_APP_PATIENT_DELETE_API + '?id=' + values._id)
+        .then(res => {
+          console.log("Success");
+          console.log(res);
+          setPatientDeleteModalOpen(false)
+          refreshCallBack()
+        })
+        .catch(err => {
+          alert ("Възникна неочаквана грешка. Презаредете приложението и опитатйте отново!");
+          console.log("Error");
+          console.log(err);
+        })
+    }
+
+    render() {
+      return (
+        <ComposedModal size="lg" //"xs","sm","lg"
+          // onRequestClose={() => setPatientDeleteModalOpen(false)}
+          //onRequestSubmit={() => { this.deletePatient() }}
+          // primaryButtonText="ДА"
+          // secondaryButtonText="НЕ"
+          open={patientDeleteModalOpen}>
+          <ModalHeader>
+            <h3>Вниманиe! Изтриване на пациент! Моля потвърдете!</h3>
+          </ModalHeader>
+          <ModalBody hasForm> 
+            <PatientInfoSection
+              name={`${values.firstname} ${values.secondname} ${values.lastname}`}
+              egn={values.egn}
+              email={values.email}
+              tel={values.telephone}
+              address={values.address}
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button kind="secondary" onClick={() => {  setPatientDeleteModalOpen(false); }} disabled={this.state.deleteInProgress}>
+              Отказ
+            </Button>
+            {this.state.deleteInProgress ? (
+               <InlineLoading  style={{ marginLeft: '1rem' }}  description='Изтриване...'  status='active' />
+            ) : (
+              <Button kind="danger" onClick={() => {this.deletePatient()}}>
+                ДА
+              </Button>
+            )}            
+          </ModalFooter>
+        </ComposedModal>
+      )
+    }
+  });
 
   return (
     <>
       {typeof document === 'undefined' ? null : ReactDOM.createPortal(
-        patientEditModal(),
+        //patientEditModal(),
+        <PatientEditModal />,
         document.body
       )}
       {typeof document === 'undefined' ? null : ReactDOM.createPortal(
-        patientDeleteModal(),
+        //patientDeleteModal(),
+        <PatientDeleteModal />,
         document.body
       )}
       {dataTable()}
