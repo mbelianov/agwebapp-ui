@@ -3,13 +3,14 @@ import {
   Form, Button, InlineNotification
 } from 'carbon-components-react';
 import ReactToPrint from 'react-to-print';
-import axios from 'axios'
+//import axios from 'axios'
+import {withAxios} from 'react-axios'
 import UzdForm from './Forms/UzdForm'
 import UzdTwinsForm from './Forms/UzdTwinsForm'
 import UzftForm from './Forms/UzftForm'
 import { ExamInfoComponent } from '../../components/InfoCards/ExamInfoComponent';
 
-export class NewExamForm extends React.Component {
+export const NewExamForm = withAxios(class NewExamFormRaw extends React.Component {
   
   values = {}; //temporary store values of all form fields
   constructor(props) {
@@ -52,7 +53,7 @@ export class NewExamForm extends React.Component {
 
     console.debug("submitting: ", content);
     this.setState({ status: { kind: "info", displayText: "Записвам..." } });
-    axios.post(process.env.REACT_APP_BACK_END_URL + process.env.REACT_APP_EXAM_ADD_API, content)
+    this.props.axios.post(process.env.REACT_APP_EXAM_ADD_API, content)
       .then(res => {
         console.debug(res);
         console.log("submit exam record result: ", res.status, res.statusText, res.data);
@@ -112,4 +113,4 @@ export class NewExamForm extends React.Component {
       </Form>
     )
   }
-}
+})

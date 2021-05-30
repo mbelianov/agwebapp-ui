@@ -39,7 +39,8 @@ const PatientDetails = (props) => {
     return (
       <div>
         <Get
-          url={process.env.REACT_APP_BACK_END_URL + process.env.REACT_APP_EXAM_FIND_API}
+          url={process.env.REACT_APP_EXAM_FIND_API}
+          //url={process.env.REACT_APP_BACK_END_URL + process.env.REACT_APP_EXAM_FIND_API}
           //url={'http://localhost:3000'+process.env.REACT_APP_EXAM_FIND_API}
           params={stateProps.searchParams}>
           {(error, response, isLoading, makeRequest, axios) => {

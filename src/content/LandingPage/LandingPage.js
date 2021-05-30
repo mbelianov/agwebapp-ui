@@ -29,7 +29,8 @@ const LandingPage = () => {
                     <div className="bx--row landing-page__tab-content">
                       <div className="bx--col-md-4 bx--col-lg-7">
                         <h2 className="landing-page__subheading">
-                          Здравейте {userState.user && userState.user.name}
+                          {userState.user.isAuthenticated()?`Здравейте ${userState.user.name}`:'Моля оторизирайте се!'}
+                          
                         </h2>
                         
                       </div>

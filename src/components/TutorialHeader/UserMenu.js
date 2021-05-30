@@ -20,7 +20,7 @@ const UserMenu = ({expanded, toggler}) => {
       <Switcher aria-label="user menu options">
         {!userState.error && userState.user && userState.user.isAuthenticated() && <><h4>{userState.user.name}</h4><SwitcherDivider /></>}
         {(userState.error || !userState.user || !userState.user.isAuthenticated()) && <SwitcherItem aria-label="login" onClick={()=>{toggler(); getUserInfoHandler()}}>Login</SwitcherItem>}
-        {!userState.error && userState.user && userState.user.isAuthenticated() && <SwitcherItem aria-label="logout" href={process.env.REACT_APP_APPID_LOGOUT_URL} onClick={()=>{toggler()}}>Logout</SwitcherItem>}
+        {!userState.error && userState.user && userState.user.isAuthenticated() && <SwitcherItem aria-label="logout" href={process.env.REACT_APP_APPID_OAUTH_SERVER_URL+'/cloud_directory/sso/logout?client_id='+process.env.REACT_APP_APPID_CLIENTID+'&redirect_uri='+process.env.REACT_APP_LOGOUT_REDIRECT_URL} onClick={()=>{toggler()}}>Logout</SwitcherItem>}
       </Switcher>
     </HeaderPanel>
   )

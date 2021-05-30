@@ -10,13 +10,6 @@ import { NewExamForm } from './NewExamForm'
 
 const NewExamTab = ({ patientId }) => {
   const [patientEGN, setPatientEGN] = useState(patientId);
-  // const [notifications, setNotifications] = useState({
-  //   uzd:{kind:"success", displayText: "", asOf:new Date()},
-  //   uzdb:{kind:"success", displayText: "", asOf:new Date()},
-  //   "uzd-twins":{kind:"success", displayText: "", asOf:new Date()},
-  //   uzft:{kind:"success", displayText: "", asOf:new Date()},
-  // })
-  // const [timestamp, setTimestamp] = useState(new Date().toISOString());
   let patientName;
   
 
@@ -34,7 +27,7 @@ const NewExamTab = ({ patientId }) => {
 
     return (
       <div>
-        <Get url={process.env.REACT_APP_BACK_END_URL + process.env.REACT_APP_PATIENT_FIND_API} params={{ search: patientEGN, exact: true }}>
+        <Get url={process.env.REACT_APP_PATIENT_FIND_API} params={{ search: patientEGN, exact: true }}>
           {(error, response, isLoading, makeRequest, axios) => {
             if (error) {
               return (
@@ -81,30 +74,6 @@ const NewExamTab = ({ patientId }) => {
       </div>
     )
   }
-
-  // const handleSubmit = (content) => {
-  //   console.debug("submitting: ", content);
-  //   showNotification(content.examId, {kind:"info", displayText: "Записвам...", asOf:new Date()});
-  //   axios.post(process.env.REACT_APP_BACK_END_URL + process.env.REACT_APP_EXAM_ADD_API, content)
-  //   //axios.post("http://localhost:3000/api/exams/add", content)
-  //       .then(res => {
-  //         console.debug(res);
-  //         console.log("submit exam record result: ", res.status, res.statusText, res.data);
-  //         showNotification(content.examId, {kind:"success", displayText: "Успех", asOf:new Date()});
-  //       })
-  //       .catch(err => {
-  //         showNotification(content.examId, {kind:"error", displayText: "Грешка при запис. Опитайте отново.", asOf:new Date()});
-          
-  //         console.log("Error submiting data: ", err.message);
-  //         console.debug(err);
-  //       })
-  // }
-
-  // const showNotification = (formId, message) => {
-  //   setNotifications({[formId]:message});
-
-  // }
-
 
   return (
     <div className="bx--grid bx--grid--full-width">

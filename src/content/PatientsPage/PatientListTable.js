@@ -529,13 +529,13 @@ const PatientListTable = ({ rows, headers, refreshCallBack, newPatientHandler })
     };
 
     telValidation = tel => {
-      if (/^(\+|00)[0-9]{1,3}[0-9]{4,14}$/.test(tel)) {
+      if (/^(\+|00)[1-9]{1,3}[0-9]{9,14}$/.test(tel)) {
         return null;
       }
       if (tel.trim() === '') {
         return 'липсва номер';
       }
-      return '+CCNDCXXXXXXXXX';
+      return '+CCNDCXXXXXXXXX (+359888111222)';
     };
 
     alwaysValid = value => {
