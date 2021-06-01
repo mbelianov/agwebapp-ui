@@ -1,12 +1,11 @@
 {
   "name": "arabadjikova.ag-webapp",
-  "version": "0.9.0",
+  "version": "0.0.0",
   "private": true,
-  "repository": "git@github.com:carbon-design-system/carbon-tutorial.git",
-  "bugs": "https://github.com/carbon-design-system/carbon-tutorial/issues",
+  "repository": "https://github.com/mbelianov/agwebapp-ui.git",
   "license": "Apache-2.0",
   "scripts": {
-    "build": "react-scripts build",
+    "build": "node generate-buildnumber.js && react-scripts build",
     "postbuild": "echo 'done'",
     "ci-check": "yarn format:diff",
     "clean": "yarn cache clean && yarn install",
