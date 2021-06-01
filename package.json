@@ -5,7 +5,7 @@
   "repository": "https://github.com/mbelianov/agwebapp-ui.git",
   "license": "Apache-2.0",
   "scripts": {
-    "prebuild": "node generate-buildnumber.js && git commit -a -m \"auto commit during react build\" && git push",
+    "prebuild": "node generate-buildnumber.js && git commit -a -F - && git push",
     "build": "react-scripts build",
     "postbuild": "echo 'done'",
     "ci-check": "yarn format:diff",
