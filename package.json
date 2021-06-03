@@ -17,6 +17,7 @@
     "format:staged": "prettier --write",
     "start": "react-scripts start",
     "test": "react-scripts test"
+    
   },
   "dependencies": {
     "@carbon/grid": "^10.17.0",
