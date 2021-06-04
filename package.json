@@ -5,9 +5,8 @@
   "repository": "https://github.com/mbelianov/agwebapp-ui.git",
   "license": "Apache-2.0",
   "scripts": {
-    "prerelease":"git commit -a && git push",
     "release": "npm run build",
-    "postrelease": "git commit --all --amend --no-edit",
+    "postrelease": "git commit --all && git push && git tag -a && git push --tags",
     "build": "node generate-buildnumber.js && react-scripts build",
     "ci-check": "yarn format:diff",
     "clean": "yarn cache clean && yarn install",
@@ -17,7 +16,7 @@
     "format:staged": "prettier --write",
     "start": "react-scripts start",
     "test": "react-scripts test"
-    
+
   },
   "dependencies": {
     "@carbon/grid": "^10.17.0",
