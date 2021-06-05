@@ -6,7 +6,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "release": "npm run build",
-    "postrelease": "git commit --all && git push && git tag -a && git push --tags",
+    "postrelease": "git commit --all && git push && git tag $npm_config_tag && git push --tags",
     "build": "node generate-buildnumber.js && react-scripts build",
     "ci-check": "yarn format:diff",
     "clean": "yarn cache clean && yarn install",
