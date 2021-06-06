@@ -5,8 +5,9 @@
   "repository": "https://github.com/mbelianov/agwebapp-ui.git",
   "license": "Apache-2.0",
   "scripts": {
+    "demo": "cross-env-shell echo \"Hello $npm_config_first $npm_config_last\"",
     "release": "npm run build",
-    "postrelease": "git commit --all && git push && git tag $npm_config_tag && git push --tags",
+    "postrelease": "cross-env-shell \"git commit --all && git push && git tag $npm_config_tag && git push --tags\"",
     "build": "node generate-buildnumber.js && react-scripts build",
     "ci-check": "yarn format:diff",
     "clean": "yarn cache clean && yarn install",
@@ -16,7 +17,6 @@
     "format:staged": "prettier --write",
     "start": "react-scripts start",
     "test": "react-scripts test"
-
   },
   "dependencies": {
     "@carbon/grid": "^10.17.0",
@@ -38,6 +38,7 @@
   "devDependencies": {
     "@commitlint/cli": "7.5.2",
     "@commitlint/config-conventional": "7.5.0",
+    "cross-env": "^7.0.3",
     "husky": "1.3.1",
     "lint-staged": "8.1.5",
     "prettier": "1.17.0",
