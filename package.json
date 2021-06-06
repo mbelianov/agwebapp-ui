@@ -5,7 +5,6 @@
   "repository": "https://github.com/mbelianov/agwebapp-ui.git",
   "license": "Apache-2.0",
   "scripts": {
-    "demo": "cross-env-shell echo \"Hello $npm_config_first $npm_config_last\"",
     "release": "npm run build",
     "postrelease": "cross-env-shell \"git commit --all && git push && git tag $npm_config_tag && git push --tags\"",
     "build": "node generate-buildnumber.js && react-scripts build",
